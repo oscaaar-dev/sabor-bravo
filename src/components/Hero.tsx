@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { DishLabel } from "@/components/DishLabel";
 import { DishPhoto } from "@/components/DishPhoto";
 import { TornEdge } from "@/components/graphics";
 import { SIGNUP_HREF } from "@/content/nav";
@@ -64,22 +65,38 @@ export function Hero() {
         </div>
 
         {/*
-          Composición gastronómica: pirámide simétrica de tres platos. El principal (pollo a la brasa)
-          arriba al centro y al frente; ceviche y lomo saltado abajo, uno a cada lado, tocando al
-          principal. Sin formas de fondo: el peso lo llevan los platos y su sombra dura.
-          Su tamaño se calcula con la altura de la ventana para que quepa siempre completa.
+          Composición gastronómica: tres fotos en marco circular, SEPARADAS entre sí (ningún solape),
+          en diagonal. Pollo a la brasa grande al centro; ceviche arriba a la derecha; lomo saltado
+          abajo a la izquierda. El lema oficial ocupa el hueco libre de arriba a la izquierda.
+          Medidas en % del ancho de la composición (alto = ancho / 1,1); las etiquetas escalan con
+          ella (cqw). Su tamaño sale de la altura de la ventana: siempre cabe completa y por encima
+          de la banda carbón.
         */}
-        <div className="relative z-10 mx-auto mt-8 w-full max-w-[40rem] px-2 wide:absolute wide:bottom-[11%] wide:right-[3%] wide:z-30 wide:mt-0 wide:w-[min(50%,calc((100svh*0.89-5.5rem)*1.1))] wide:max-w-none wide:px-0">
-          <div className="relative aspect-[1.1/1] w-full">
-            <div className="absolute left-[0%] top-[50%] z-10 aspect-square w-[40%]">
-              <DishPhoto slug="ceviche" sizes="(min-width:1024px) 20vw, 40vw" priority />
+        <div className="relative z-10 mx-auto mt-8 w-full max-w-[40rem] px-2 wide:absolute wide:bottom-[14%] wide:right-[3%] wide:z-30 wide:mt-0 wide:w-[min(50%,calc((100svh*0.86-5.25rem)*1.1))] wide:max-w-none wide:px-0">
+          <div className="@container relative aspect-[1.1/1] w-full">
+            <Image
+              data-kind="tagline"
+              src="/images/hero/lema-buena-comida.png"
+              alt="Buena comida, mejores momentos."
+              width={280}
+              height={150}
+              sizes="22vw"
+              className="absolute left-0 top-0 hidden w-[46%] wide:block"
+            />
+
+            <div data-kind="plate" className="absolute left-[70%] top-0 aspect-square w-[30%]">
+              <DishPhoto slug="ceviche" sizes="(min-width:1024px) 16vw, 30vw" priority />
             </div>
-            <div className="absolute left-[60%] top-[50%] z-20 aspect-square w-[40%]">
-              <DishPhoto slug="lomo-saltado" sizes="(min-width:1024px) 20vw, 40vw" priority />
+            <div data-kind="plate" className="absolute left-[29%] top-[30.8%] aspect-square w-[48%]">
+              <DishPhoto slug="pollo-brasa" sizes="(min-width:1024px) 26vw, 48vw" priority />
             </div>
-            <div className="absolute left-[20%] top-[0%] z-30 aspect-square w-[60%]">
-              <DishPhoto slug="pollo-brasa" sizes="(min-width:1024px) 32vw, 60vw" priority />
+            <div data-kind="plate" className="absolute left-0 top-[64.9%] aspect-square w-[32%]">
+              <DishPhoto slug="lomo-saltado" sizes="(min-width:1024px) 17vw, 32vw" priority />
             </div>
+
+            <DishLabel className="right-0 top-[22.5%]">Ceviche peruano</DishLabel>
+            <DishLabel className="left-[62%] top-[72.6%]">Pollo a la brasa</DishLabel>
+            <DishLabel className="left-[12%] top-[88%]">Lomo saltado</DishLabel>
           </div>
         </div>
 

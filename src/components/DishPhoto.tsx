@@ -16,39 +16,33 @@ function publicFileExists(publicUrl: string): boolean {
 }
 
 /**
- * Foto de plato recortada (PNG con fondo transparente) que rellena a su contenedor.
- * Si el PNG no existe todavía, dibuja una reserva con la forma de un plato y el
- * nombre del archivo esperado (solo visible fuera de producción).
+ * Foto de plato en marco circular (aro carbón + aro crema) que rellena a su contenedor.
+ * La foto es CUADRADA y se recorta en círculo (`object-cover`); no necesita fondo transparente.
+ * Si el PNG todavía no existe (ver docs/ASSETS.md), dibuja una reserva con la misma forma.
  */
 export function DishPhoto({ slug, sizes, priority = false, className = "" }: DishPhotoProps) {
   const dish = DISHES[slug];
-
-  if (publicFileExists(dish.file)) {
-    return (
-      <Image
-        src={dish.file}
-        alt={dish.label}
-        fill
-        sizes={sizes}
-        priority={priority}
-        className={`object-contain drop-shadow-[0_14px_0_rgba(23,20,18,0.18)] ${className}`}
-      />
-    );
-  }
+  const hasPhoto = publicFileExists(dish.file);
 
   return (
     <div
-      role="img"
-      aria-label={`${dish.label} (foto pendiente)`}
-      className={`@container absolute inset-0 grid place-items-center ${className}`}
+      role={hasPhoto ? undefined : "img"}
+      aria-label={hasPhoto ? undefined : `${dish.label} (foto pendiente)`}
+      className={`@container absolute inset-0 rounded-full bg-carbon p-[2.4%] ${className}`}
     >
-      <div className="relative grid aspect-square w-full max-w-full place-items-center rounded-full border-[3px] border-carbon bg-crema shadow-brutal-sm">
-        <div className="absolute inset-[9%] rounded-full border-2 border-dashed border-carbon/50" />
-        <div className="relative px-[14%] text-center">
-          <p className="h-script text-[clamp(1rem,2.4vw,1.7rem)] text-rojo-oscuro">{dish.label}</p>
-          <p className="mt-1 hidden text-[0.6rem] font-bold uppercase leading-tight tracking-wider text-carbon-suave @[11rem]:block">
-            Foto pendiente
-          </p>
+      <div className="h-full w-full rounded-full bg-crema p-[2.8%]">
+        <div className="relative h-full w-full overflow-hidden rounded-full bg-papel">
+          {hasPhoto ? (
+            <Image src={dish.file} alt={dish.label} fill sizes={sizes} priority={priority} className="object-cover" />
+          ) : (
+            <div className="grid h-full w-full place-items-center">
+              <p className="hidden text-center text-[0.62rem] font-bold uppercase leading-tight tracking-wider text-carbon-suave @[7rem]:block">
+                Foto
+                <br />
+                pendiente
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -10,7 +10,9 @@ Se generan con `npm run assets:brand`. Los originales de `recursos_sabor/` no se
 | `public/images/brands/sabor-bravo-compacto.png` | Llama + palabra, sin subrayado. Barra de navegación |
 | `public/images/brands/sabor-bravo-icono.png` | Solo la llama, 512×512, transparente |
 | `src/app/icon.png` | Favicon (256×256, desde el icono) |
-| `public/images/hero/fondo-sabor-bravo.png` | Fondo oficial del hero (1672×941). Ya lleva impresos el logo y dos lemas |
+| `public/images/hero/fondo-sabor-bravo.png` | Fondo oficial completo (1672×941). Ya no se usa en el hero; se conserva |
+| `public/images/hero/fondo-hero.png` | Fondo del hero: solo logo, pincelada y marca de agua (derivado, `npm run assets:hero`) |
+| `public/images/hero/lema-buena-comida.png` | Lema oficial recortado, fondo transparente (derivado, `npm run assets:hero`) |
 
 Nota: la palabra "SABOR BRAVO" del logo es **negra**; sobre fondos oscuros hay que ponerla sobre un parche crema.
 
@@ -21,17 +23,17 @@ Basta con guardar el PNG con el nombre exacto: se detecta solo, sin tocar códig
 
 Especificaciones comunes:
 
-- **PNG con fondo transparente (recorte real, sin cuadrícula simulada)**, plato completo visible con ~4 % de margen.
-- Cuadrado, **1400×1400 px** (la bebida: 840×1400, proporción 3:5).
-- Iluminación de campaña publicitaria, vista 3/4 desde arriba, sin texto ni logos dentro de la foto.
-- Sombra de contacto suave incluida o ninguna (el sitio añade una sombra dura propia).
+- **Foto CUADRADA, 1400×1400 px, PNG.** Se muestra recortada en **círculo** con aro carbón y aro crema (`object-cover`): **no necesita fondo transparente**.
+- Plato centrado y completo, con ~6 % de margen respecto al círculo (el recorte circular corta las esquinas).
+- Vista cenital o 3/4, iluminación de campaña publicitaria, sin texto ni logos dentro de la foto (el nombre del plato lo pone la interfaz en una etiqueta de pincel).
+- La bebida (`chicha-morada.png`) usa el mismo formato cuadrado.
 
 | Archivo en `public/images/dishes/` | Plato | Dónde se usa |
 |---|---|---|
-| `ceviche.png` | Ceviche peruano (con choclo y camote) | Hero, demo La Mar Cevichería |
-| `pollo-brasa.png` | Pollo a la brasa con papas | Hero, demo El Gallo Bravo |
-| `lomo-saltado.png` | Lomo saltado | Hero, demo Sabor Criollo |
-| `chicha-morada.png` (840×1400) | Vaso de chicha morada | Hero |
+| `ceviche.png` | Ceviche peruano (con choclo y camote) | Hero (arriba a la derecha), demo La Mar Cevichería |
+| `pollo-brasa.png` | Pollo a la brasa con papas | Hero (plato principal), demo El Gallo Bravo |
+| `lomo-saltado.png` | Lomo saltado | Hero (abajo a la izquierda), demo Sabor Criollo |
+| `chicha-morada.png` | Vaso de chicha morada | Reservado |
 | `cafe.png` | Café / bebida caliente | Demo Café del Valle |
 | `arroz-chaufa.png` | Arroz chaufa | Reservado (chifa) |
 | `pizza.png` | Pizza | Reservado (pizzería) |
