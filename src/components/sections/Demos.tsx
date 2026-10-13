@@ -16,7 +16,7 @@ const DEMOS: readonly Demo[] = [
   { slug: "la-mar-cevicheria", nombre: "La Mar Cevichería", especialidad: "Cevichería", dish: "ceviche", surface: "bg-papel text-carbon", offset: "" },
   { slug: "el-gallo-bravo", nombre: "El Gallo Bravo", especialidad: "Pollería", dish: "pollo-brasa", surface: "bg-naranja text-carbon", offset: "lg:mt-14" },
   { slug: "cafe-del-valle", nombre: "Café del Valle", especialidad: "Cafetería", dish: "cafe", surface: "bg-carbon text-crema", offset: "lg:mt-4" },
-  { slug: "sabor-criollo", nombre: "Sabor Criollo", especialidad: "Comida criolla", dish: "lomo-saltado", surface: "bg-rojo text-crema", offset: "lg:mt-20" },
+  { slug: "sabor-criollo", nombre: "Sabor Criollo", especialidad: "Comida criolla", dish: "lomo-saltado", surface: "bg-rojo-oscuro text-crema", offset: "lg:mt-20" },
 ];
 
 const OTRAS = ["Chifas", "Pizzerías y pastas", "Hamburgueserías", "Juguerías", "Pastelerías"] as const;
@@ -26,7 +26,7 @@ export function Demos() {
     <section id="demos" className="bg-crema py-[var(--section-y)]" aria-labelledby="demos-titulo">
       <div className="container-sb">
         <div className="max-w-3xl">
-          <p className="eyebrow text-rojo">Restaurantes de demostración</p>
+          <p className="eyebrow text-rojo-oscuro">Restaurantes de demostración</p>
           <h2 id="demos-titulo" className="mt-4 text-[clamp(2.2rem,5vw,4.4rem)]">
             <span className="h-display">Una plataforma.</span>{" "}
             <span className="h-script text-[1.2em] text-rojo">Todas las cocinas.</span>

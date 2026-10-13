@@ -46,7 +46,7 @@ export function DishPhoto({ slug, sizes, priority = false, className = "" }: Dis
       <div className="relative grid aspect-square w-full max-w-full place-items-center rounded-full border-[3px] border-carbon bg-crema shadow-brutal-sm">
         <div className="absolute inset-[9%] rounded-full border-2 border-dashed border-carbon/50" />
         <div className="relative px-[14%] text-center">
-          <p className="h-script text-[clamp(1rem,2.4vw,1.7rem)] text-rojo">{dish.label}</p>
+          <p className="h-script text-[clamp(1rem,2.4vw,1.7rem)] text-rojo-oscuro">{dish.label}</p>
           {showPath ? (
             <p className="mt-1 hidden break-all text-[0.6rem] @[11rem]:block font-bold uppercase leading-tight tracking-wider text-carbon-suave">
               Foto pendiente

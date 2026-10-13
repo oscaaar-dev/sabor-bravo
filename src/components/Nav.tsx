@@ -53,8 +53,8 @@ export function Nav() {
           <Image
             src="/images/brands/sabor-bravo-compacto.png"
             alt="Sabor Bravo"
-            width={842}
-            height={400}
+            width={190}
+            height={90}
             className="h-11 w-auto"
             priority
           />

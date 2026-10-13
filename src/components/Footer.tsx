@@ -10,8 +10,8 @@ export function Footer() {
           <Image
             src="/images/brands/sabor-bravo-horizontal.png"
             alt="Sabor Bravo"
-            width={926}
-            height={480}
+            width={185}
+            height={96}
             className="h-24 w-auto"
           />
           <p className="mt-4 max-w-xs text-carbon-suave">

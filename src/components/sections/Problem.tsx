@@ -18,7 +18,7 @@ export function Problem() {
     <section className="bg-crema py-[var(--section-y)]" aria-labelledby="problema-titulo">
       <div className="container-sb grid gap-12 lg:grid-cols-12 lg:gap-8">
         <div className="lg:col-span-5">
-          <p className="eyebrow text-rojo">El problema de casi toda carta</p>
+          <p className="eyebrow text-rojo-oscuro">El problema de casi toda carta</p>
           <h2
             id="problema-titulo"
             className="mt-4 text-[clamp(2.2rem,5.2vw,4.6rem)]"

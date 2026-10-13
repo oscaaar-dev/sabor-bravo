@@ -16,8 +16,8 @@ export function StubPage({ title, script, children }: StubPageProps) {
           <Image
             src="/images/brands/sabor-bravo-compacto.png"
             alt="Sabor Bravo"
-            width={842}
-            height={400}
+            width={118}
+            height={56}
             className="h-14 w-auto"
           />
         </Link>

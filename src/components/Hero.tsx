@@ -29,14 +29,14 @@ export function Hero() {
           fill
           priority
           sizes="100vw"
-          className="origin-bottom-right scale-[1.35] object-[100%_100%] wide:origin-center wide:scale-100 wide:object-[0%_0%]"
+          className="origin-bottom-right scale-[1.35] object-cover object-[100%_100%] wide:origin-center wide:scale-100 wide:object-[0%_0%]"
         />
       </div>
 
       <div className="relative mx-auto flex min-h-[100svh] w-full max-w-[120rem] flex-col pt-[calc(var(--nav-h)+1.75rem)] wide:block wide:min-h-[max(100svh,56.3vw)] wide:pt-[calc(max(100svh,56.3vw)*0.235)]">
         {/* Columna editorial */}
         <div className={`container-sb relative z-20 ${COL_LEFT}`}>
-          <p className="sb-rise sticker -rotate-2 bg-rojo !text-[0.66rem] text-crema sm:!text-[0.8rem] [animation-delay:60ms]">
+          <p className="sb-rise sticker -rotate-2 bg-rojo-oscuro !text-[0.66rem] text-crema sm:!text-[0.8rem] [animation-delay:60ms]">
             Plataforma digital para restaurantes
           </p>
 
@@ -57,7 +57,7 @@ export function Hero() {
           </p>
 
           <div className="sb-rise mt-7 flex flex-col gap-4 [animation-delay:300ms] sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-6 sm:gap-y-3 wide:mt-5">
-            <Link href={SIGNUP_HREF} className="btn-brutal btn-rojo !text-[1.2rem]">
+            <Link href={SIGNUP_HREF} className="btn-brutal btn-rojo btn-rojo-vivo !text-[1.2rem]">
               Crear mi menú digital
               <span aria-hidden="true">→</span>
             </Link>
@@ -97,7 +97,7 @@ export function Hero() {
             </div>
 
             {/* Sticker */}
-            <p className="h-script absolute bottom-[2%] right-[-1%] z-40 max-w-[44%] -rotate-[11deg] border-[3px] border-carbon bg-rojo px-4 py-3 text-center text-[clamp(0.95rem,1.9vw,1.55rem)] leading-[1.1] text-crema shadow-brutal-sm">
+            <p className="h-script absolute bottom-[2%] right-[-1%] z-40 max-w-[44%] -rotate-[11deg] border-[3px] border-carbon bg-rojo-oscuro px-4 py-3 text-center text-[clamp(0.95rem,1.9vw,1.55rem)] leading-[1.1] text-crema shadow-brutal-sm">
               Cualquier antojo, en un solo lugar
             </p>
           </div>

@@ -150,11 +150,15 @@ body {
     transform: translate(6px, 6px);
     box-shadow: 0 0 0 0 var(--color-carbon);
   }
+  /* Texto pequeño sobre rojo: usa el rojo oscuro (5,2:1). El rojo vivo (3,7:1) solo con texto grande. */
   .btn-rojo {
-    background: var(--color-rojo);
+    background: var(--color-rojo-oscuro);
     color: var(--color-crema);
   }
-  .btn-rojo:hover {
+  .btn-rojo-vivo {
+    background: var(--color-rojo);
+  }
+  .btn-rojo-vivo:hover {
     background: var(--color-rojo-oscuro);
   }
   .btn-crema {
