@@ -1,7 +1,8 @@
 // Prepara las fotos de platos para los marcos circulares. Entrada: recursos_sabor/platos/<slug>.webp
 // (recortes con fondo transparente; los originales NO se modifican). Salida: public/images/dishes/<slug>.png,
-// cuadrado de 1400×1400 con el plato centrado y su punto más lejano a ~94 % del radio del círculo, de modo
-// que el recorte circular (object-cover) nunca corta el plato. Uso: npm run assets:dishes
+// cuadrado de 1400×1400 AMPLIADO para que el plato LLENE todo el círculo: el radio del círculo es el 97 % del
+// mayor círculo (centrado en el plato) que cabe dentro de la silueta, así que no quedan huecos de fondo.
+// Los extremos de platos ovalados quedan recortados por el círculo. Uso: npm run assets:dishes
 import sharp from "sharp";
 import { mkdirSync, readdirSync } from "node:fs";
 import path from "node:path";
@@ -10,7 +11,7 @@ const root = process.cwd();
 const IN = path.join(root, "recursos_sabor", "platos");
 const OUT = path.join(root, "public", "images", "dishes");
 const SIZE = 1400;
-const FILL = 0.94; // fracción del radio del círculo que ocupa el punto más lejano del plato
+const FILL = 0.97; // radio del círculo / radio del mayor círculo inscrito en el plato (<1 = margen de seguridad)
 const ALPHA_MIN = 40; // píxeles con alfa menor se ignoran (bordes difuminados)
 mkdirSync(OUT, { recursive: true });
 
@@ -32,12 +33,13 @@ for (const file of readdirSync(IN).filter((f) => f.endsWith(".webp"))) {
   const cx = (minX + maxX) / 2;
   const cy = (minY + maxY) / 2;
 
-  // 2) radio que necesita el círculo: distancia al píxel opaco más lejano del centro
-  let far = 0;
+  // 2) radio del mayor círculo, centrado en el plato, que cabe dentro de la silueta opaca:
+  //    distancia mínima del centro a cualquier píxel transparente (o al borde de la caja)
+  let inner = Math.min(cx - minX + 1, maxX - cx + 1, cy - minY + 1, maxY - cy + 1);
   for (let y = minY; y <= maxY; y++)
     for (let x = minX; x <= maxX; x++)
-      if (data[(y * w + x) * 4 + 3] > ALPHA_MIN) far = Math.max(far, Math.hypot(x - cx, y - cy));
-  const side = Math.round((2 * far) / FILL); // lado del cuadrado de recorte en píxeles de origen
+      if (data[(y * w + x) * 4 + 3] < 128) inner = Math.min(inner, Math.hypot(x - cx, y - cy));
+  const side = Math.round(2 * inner * FILL); // lado del cuadrado de recorte en píxeles de origen
 
   // 3) lienzo transparente de `side`×`side` con el plato centrado, escalado a 1400
   const left = Math.round(cx - side / 2);
@@ -51,5 +53,5 @@ for (const file of readdirSync(IN).filter((f) => f.endsWith(".webp"))) {
   // sharp aplica resize ANTES que composite: se compone primero a tamaño de origen y se escala después.
   const composed = await canvas.composite([{ input: piece, left: ox, top: oy }]).png().toBuffer();
   await sharp(composed).resize(SIZE, SIZE).png({ compressionLevel: 9 }).toFile(path.join(OUT, `${slug}.png`));
-  console.log(`${slug}.png  origen ${w}x${h}  plato x ${minX}-${maxX} y ${minY}-${maxY}  lado de recorte ${side}px -> ${SIZE}x${SIZE}`);
+  console.log(`${slug}.png  origen ${w}x${h}  plato x ${minX}-${maxX} y ${minY}-${maxY}  círculo inscrito r=${Math.round(inner)}  lado de recorte ${side}px -> ${SIZE}x${SIZE}`);
 }

@@ -20,7 +20,7 @@ Nota: la palabra "SABOR BRAVO" del logo es **negra**; sobre fondos oscuros hay q
 
 **Entregadas (3 de 8):** `ceviche`, `pollo-brasa` y `lomo-saltado`. Los originales (recortes con fondo transparente) están en
 `recursos_sabor/platos/*.webp` y NO se modifican; `npm run assets:dishes` genera `public/images/dishes/<plato>.png`
-(1400×1400, plato centrado y con margen para el recorte circular). Para cambiar una foto: reemplazar el original y volver a ejecutar el script.
+(1400×1400, ampliado para que el plato llene todo el círculo; los extremos de platos ovalados quedan recortados). Para cambiar una foto: reemplazar el original y volver a ejecutar el script.
 
 **Pendientes:** `cafe`, `chicha-morada`, `arroz-chaufa`, `pizza` y `postre`. Mientras falten, `DishPhoto` dibuja una reserva circular con la etiqueta "Foto pendiente".
 Para añadirlas: guardar el recorte como `recursos_sabor/platos/<plato>.webp` y ejecutar `npm run assets:dishes` (se detecta solo, sin tocar código).
@@ -28,7 +28,7 @@ Para añadirlas: guardar el recorte como `recursos_sabor/platos/<plato>.webp` y 
 Especificaciones comunes:
 
 - **Cualquier proporción de origen**: el script la convierte a un cuadrado de 1400×1400 px y se muestra recortada en **círculo** con aro carbón y aro crema. Un recorte con **fondo transparente** (como los entregados) queda sobre el papel crema del círculo; una foto con fondo también funciona.
-- Plato completo y sin cortes en la foto original; el script lo centra y deja ~6 % de margen respecto al círculo.
+- Plato completo y sin cortes en la foto original; el script lo centra y lo amplía hasta que ocupe todo el círculo (radio = 97 % del mayor círculo inscrito en la silueta), sin dejar huecos de fondo.
 - Vista cenital o 3/4, iluminación de campaña publicitaria, sin texto ni logos dentro de la foto (el nombre del plato lo pone la interfaz en una etiqueta de pincel).
 - La bebida (`chicha-morada.png`) usa el mismo formato cuadrado.
 
