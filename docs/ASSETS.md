@@ -18,7 +18,7 @@ Nota: la palabra "SABOR BRAVO" del logo es **negra**; sobre fondos oscuros hay q
 
 ## Pendientes: fotografías de platos
 
-Todavía **no existen**. Mientras falten, `DishPhoto` dibuja una reserva con la ruta esperada (solo fuera de producción).
+Todavía **no existen**. Mientras falten, `DishPhoto` dibuja una reserva circular con la etiqueta "Foto pendiente"; los nombres de archivo esperados son los de la tabla de abajo.
 Basta con guardar el PNG con el nombre exacto: se detecta solo, sin tocar código.
 
 Especificaciones comunes:
