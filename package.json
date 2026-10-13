@@ -9,7 +9,8 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "assets:brand": "node scripts/build-brand-assets.mjs",
-    "assets:hero": "node scripts/build-hero-bg.mjs"
+    "assets:hero": "node scripts/build-hero-bg.mjs",
+    "assets:dishes": "node scripts/build-dish-photos.mjs"
   },
   "dependencies": {
     "next": "^16.4.0",

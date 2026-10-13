@@ -18,13 +18,17 @@ Nota: la palabra "SABOR BRAVO" del logo es **negra**; sobre fondos oscuros hay q
 
 ## Pendientes: fotografías de platos
 
-Todavía **no existen**. Mientras falten, `DishPhoto` dibuja una reserva circular con la etiqueta "Foto pendiente"; los nombres de archivo esperados son los de la tabla de abajo.
-Basta con guardar el PNG con el nombre exacto: se detecta solo, sin tocar código.
+**Entregadas (3 de 8):** `ceviche`, `pollo-brasa` y `lomo-saltado`. Los originales (recortes con fondo transparente) están en
+`recursos_sabor/platos/*.webp` y NO se modifican; `npm run assets:dishes` genera `public/images/dishes/<plato>.png`
+(1400×1400, plato centrado y con margen para el recorte circular). Para cambiar una foto: reemplazar el original y volver a ejecutar el script.
+
+**Pendientes:** `cafe`, `chicha-morada`, `arroz-chaufa`, `pizza` y `postre`. Mientras falten, `DishPhoto` dibuja una reserva circular con la etiqueta "Foto pendiente".
+Para añadirlas: guardar el recorte como `recursos_sabor/platos/<plato>.webp` y ejecutar `npm run assets:dishes` (se detecta solo, sin tocar código).
 
 Especificaciones comunes:
 
-- **Foto CUADRADA, 1400×1400 px, PNG.** Se muestra recortada en **círculo** con aro carbón y aro crema (`object-cover`): **no necesita fondo transparente**.
-- Plato centrado y completo, con ~6 % de margen respecto al círculo (el recorte circular corta las esquinas).
+- **Cualquier proporción de origen**: el script la convierte a un cuadrado de 1400×1400 px y se muestra recortada en **círculo** con aro carbón y aro crema. Un recorte con **fondo transparente** (como los entregados) queda sobre el papel crema del círculo; una foto con fondo también funciona.
+- Plato completo y sin cortes en la foto original; el script lo centra y deja ~6 % de margen respecto al círculo.
 - Vista cenital o 3/4, iluminación de campaña publicitaria, sin texto ni logos dentro de la foto (el nombre del plato lo pone la interfaz en una etiqueta de pincel).
 - La bebida (`chicha-morada.png`) usa el mismo formato cuadrado.
 
