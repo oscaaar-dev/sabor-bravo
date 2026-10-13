@@ -1,0 +1,31 @@
+# dependencias y artefactos de build
+node_modules/
+.next/
+out/
+dist/
+build/
+coverage/
+*.tsbuildinfo
+next-env.d.ts
+.vercel/
+
+# secretos y configuración local: NUNCA se versionan
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+.supabase/
+supabase/.temp/
+supabase/.branches/
+
+# herramientas locales / sistema
+.claude/
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log
+npm-debug.log*
+playwright-report/
+test-results/

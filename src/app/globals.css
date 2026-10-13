@@ -1,0 +1,226 @@
+@import "tailwindcss";
+
+/*
+ * SABOR BRAVO — tokens de diseño
+ * Neobrutalismo gastronómico editorial: bordes carbón visibles, sombras duras
+ * sin desenfoque, bloques de color y trazos de pincel tomados del fondo oficial.
+ */
+@theme {
+  /* Paleta oficial */
+  --color-crema: #fff4df;
+  --color-papel: #f7e9cf; /* tono medio del papel del fondo oficial (hero) */
+  --color-rojo: #f12f24;
+  --color-naranja: #ff9d2e;
+  --color-carbon: #171412;
+
+  /* Derivados funcionales (mismo matiz, solo para estados y marcas de agua) */
+  --color-crema-oscuro: #ecdcb8; /* marca de agua / bordes suaves sobre crema */
+  --color-rojo-oscuro: #c9201a; /* hover/active del rojo; contraste AA con texto crema */
+  --color-carbon-suave: #3a342f; /* texto secundario sobre crema (AA) */
+
+  /* Tipografía */
+  --font-display: var(--font-lobster), "Brush Script MT", cursive;
+  --font-sans: var(--font-montserrat), system-ui, sans-serif;
+
+  /* Bordes y sombras duras */
+  --radius-brutal: 6px;
+  --shadow-brutal-sm: 3px 3px 0 0 #171412;
+  --shadow-brutal: 6px 6px 0 0 #171412;
+  --shadow-brutal-lg: 10px 10px 0 0 #171412;
+  --shadow-brutal-rojo: 6px 6px 0 0 #f12f24;
+
+  /* Breakpoints: móvil primero; el hero editorial pasa a composición ancha en lg */
+  --breakpoint-sm: 40rem;
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 64rem;
+  --breakpoint-xl: 80rem;
+  --breakpoint-2xl: 96rem;
+}
+
+:root {
+  /* Escala de espaciado de sección y gutter fluido */
+  --gutter: clamp(1rem, 4vw, 3.5rem);
+  --section-y: clamp(4rem, 9vw, 8rem);
+  --border-w: 3px;
+  --nav-h: 4.25rem;
+}
+
+/* Composición editorial del hero: solo en pantallas panorámicas (>=1024px y >=3:2). */
+@custom-variant wide (@media (min-width: 64rem) and (min-aspect-ratio: 3/2));
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--nav-h) + 1rem);
+}
+
+body {
+  background: var(--color-crema);
+  color: var(--color-carbon);
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-rojo);
+  color: var(--color-crema);
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-carbon);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@layer components {
+  .container-sb {
+    width: 100%;
+    max-width: 90rem;
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  /* Titulares: Montserrat ExtraBold en mayúsculas, apretados */
+  .h-display {
+    font-family: var(--font-sans);
+    font-weight: 800;
+    text-transform: uppercase;
+    line-height: 0.92;
+    letter-spacing: -0.035em;
+  }
+
+  /* Frases expresivas: Lobster, solo para acentos */
+  .h-script {
+    font-family: var(--font-display);
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  .eyebrow {
+    font-family: var(--font-sans);
+    font-weight: 800;
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  /* Botones brutalistas: borde carbón, sombra dura, se hunden al presionar */
+  .btn-brutal {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    min-height: 3rem;
+    padding: 0.75rem 1.5rem;
+    border: var(--border-w) solid var(--color-carbon);
+    border-radius: var(--radius-brutal);
+    font-family: var(--font-sans);
+    font-weight: 800;
+    font-size: 1rem;
+    line-height: 1.1;
+    box-shadow: var(--shadow-brutal);
+    transition:
+      transform 120ms ease,
+      box-shadow 120ms ease,
+      background-color 120ms ease;
+    cursor: pointer;
+  }
+  .btn-brutal:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 4px 4px 0 0 var(--color-carbon);
+  }
+  .btn-brutal:active {
+    transform: translate(6px, 6px);
+    box-shadow: 0 0 0 0 var(--color-carbon);
+  }
+  .btn-rojo {
+    background: var(--color-rojo);
+    color: var(--color-crema);
+  }
+  .btn-rojo:hover {
+    background: var(--color-rojo-oscuro);
+  }
+  .btn-crema {
+    background: var(--color-crema);
+    color: var(--color-carbon);
+  }
+  .btn-carbon {
+    background: var(--color-carbon);
+    color: var(--color-crema);
+    box-shadow: 6px 6px 0 0 var(--color-rojo);
+  }
+  .btn-carbon:hover {
+    box-shadow: 4px 4px 0 0 var(--color-rojo);
+  }
+  .btn-sm {
+    min-height: 2.75rem;
+    padding: 0.5rem 1.1rem;
+    font-size: 0.875rem;
+    box-shadow: var(--shadow-brutal-sm);
+  }
+  .btn-sm:hover {
+    box-shadow: 1px 1px 0 0 var(--color-carbon);
+  }
+
+  /* Superficies con contorno y sombra dura */
+  .panel-brutal {
+    background: var(--color-crema);
+    border: var(--border-w) solid var(--color-carbon);
+    border-radius: var(--radius-brutal);
+    box-shadow: var(--shadow-brutal);
+  }
+
+  /* Sticker: bloque de color inclinado con borde */
+  .sticker {
+    display: inline-block;
+    border: var(--border-w) solid var(--color-carbon);
+    border-radius: var(--radius-brutal);
+    box-shadow: var(--shadow-brutal-sm);
+    padding: 0.35rem 0.8rem;
+    font-weight: 800;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* Aspecto de papel crema sobre carbón: texto fantasma de marca */
+  .ghost-word {
+    font-family: var(--font-display);
+    line-height: 0.8;
+    white-space: nowrap;
+    user-select: none;
+    pointer-events: none;
+  }
+}
+
+/* Entrada suave del hero; se desactiva con prefers-reduced-motion (regla global arriba) */
+@keyframes sb-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.sb-rise {
+  animation: sb-rise 600ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
