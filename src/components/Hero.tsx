@@ -4,30 +4,33 @@ import { DishPhoto } from "@/components/DishPhoto";
 import { TornEdge } from "@/components/graphics";
 import { SIGNUP_HREF } from "@/content/nav";
 
-/** Alinea el contenido del hero con el contenedor de 90rem en pantallas anchas. */
-const COL_LEFT =
-  "wide:max-w-[46%] wide:!mx-0 xl:pl-[max(var(--gutter),calc((100vw-90rem)/2+var(--gutter)))]";
+/**
+ * En panorámico el titular se alinea con el borde izquierdo de la llama del logo del fondo
+ * (≈5 % del ancho del fondo mostrado, que es min(ancho, alto × 1,777)).
+ */
+const COL_LEFT = "wide:max-w-[46%] wide:!mx-0 wide:!pl-[calc(min(100vw,177.7svh)*0.05)]";
 
 export function Hero() {
   return (
     <section className="relative isolate overflow-hidden bg-papel" aria-labelledby="hero-titulo">
       {/*
-        Fondo oficial. En panorámico ocupa todo el hero (el logo impreso arriba a la izquierda
-        es el logo del hero). En apilado se amplía y se ancla abajo a la derecha: así no se repite
-        el logo ni se corta un lema a medias.
+        Fondo oficial LIMPIO (ver scripts/build-hero-bg.mjs): solo el logo con su pincelada y la
+        marca de agua. Solo en panorámico, donde el logo impreso hace de logo del hero. `contain`
+        anclado arriba a la izquierda: nunca se recorta y el resto es papel del mismo color.
+        En pantallas apiladas la barra ya lleva el logo, así que el fondo se omite.
       */}
-      <div className="absolute inset-x-0 bottom-0 -z-10 h-[62%] overflow-hidden wide:inset-0 wide:h-full">
+      <div className="absolute inset-0 -z-10 hidden wide:block">
         <Image
-          src="/images/hero/fondo-sabor-bravo.png"
+          src="/images/hero/fondo-hero.png"
           alt=""
           fill
           priority
           sizes="100vw"
-          className="origin-bottom-right scale-[1.35] object-cover object-[100%_100%] wide:origin-center wide:scale-100 wide:object-[0%_0%]"
+          className="object-contain object-[0%_0%]"
         />
       </div>
 
-      <div className="relative mx-auto flex min-h-[100svh] w-full max-w-[120rem] flex-col pt-[calc(var(--nav-h)+1.75rem)] wide:block wide:min-h-[max(100svh,56.3vw)] wide:pt-[calc(max(100svh,56.3vw)*0.265)]">
+      <div className="relative mx-auto flex min-h-[100svh] w-full max-w-[120rem] flex-col pt-[calc(var(--nav-h)+1.75rem)] wide:block wide:min-h-[100svh] wide:pt-[calc(min(100svh,56.3vw)*0.265)]">
         {/* Columna editorial: titular, una frase, un botón */}
         <div className={`container-sb relative z-20 ${COL_LEFT}`}>
           <h1
@@ -61,26 +64,27 @@ export function Hero() {
         </div>
 
         {/*
-          Composición gastronómica: una diagonal de tres platos. El principal (pollo a la brasa) va
-          al centro y al frente; el ceviche cierra arriba a la derecha y el lomo saltado abajo a la
-          izquierda. Sin formas de fondo: el peso lo llevan los platos y su sombra dura.
+          Composición gastronómica: pirámide simétrica de tres platos. El principal (pollo a la brasa)
+          arriba al centro y al frente; ceviche y lomo saltado abajo, uno a cada lado, tocando al
+          principal. Sin formas de fondo: el peso lo llevan los platos y su sombra dura.
+          Su tamaño se calcula con la altura de la ventana para que quepa siempre completa.
         */}
-        <div className="relative z-10 mx-auto mt-8 w-full max-w-[40rem] px-2 wide:absolute wide:bottom-[1%] wide:right-[2%] wide:z-30 wide:mt-0 wide:w-[min(52%,calc(100svh*0.98))] wide:max-w-none wide:px-0">
+        <div className="relative z-10 mx-auto mt-8 w-full max-w-[40rem] px-2 wide:absolute wide:bottom-[11%] wide:right-[3%] wide:z-30 wide:mt-0 wide:w-[min(50%,calc((100svh*0.89-5.5rem)*1.1))] wide:max-w-none wide:px-0">
           <div className="relative aspect-[1.1/1] w-full">
-            <div className="absolute left-[58%] top-[0%] z-10 aspect-square w-[40%]">
-              <DishPhoto slug="ceviche" sizes="(min-width:1024px) 22vw, 40vw" priority />
+            <div className="absolute left-[0%] top-[50%] z-10 aspect-square w-[40%]">
+              <DishPhoto slug="ceviche" sizes="(min-width:1024px) 20vw, 40vw" priority />
             </div>
-            <div className="absolute left-[0%] top-[52%] z-20 aspect-square w-[40%]">
-              <DishPhoto slug="lomo-saltado" sizes="(min-width:1024px) 22vw, 40vw" priority />
+            <div className="absolute left-[60%] top-[50%] z-20 aspect-square w-[40%]">
+              <DishPhoto slug="lomo-saltado" sizes="(min-width:1024px) 20vw, 40vw" priority />
             </div>
-            <div className="absolute left-[20%] top-[18%] z-30 aspect-square w-[60%]">
+            <div className="absolute left-[20%] top-[0%] z-30 aspect-square w-[60%]">
               <DishPhoto slug="pollo-brasa" sizes="(min-width:1024px) 32vw, 60vw" priority />
             </div>
           </div>
         </div>
 
         {/* Banda carbón rasgada: transición hacia la siguiente sección (sin texto) */}
-        <div className="relative z-20 mt-auto wide:absolute wide:inset-x-0 wide:bottom-0 wide:mt-0 wide:flex wide:h-[25.5%] wide:flex-col">
+        <div className="relative z-20 mt-auto wide:absolute wide:inset-x-0 wide:bottom-0 wide:mt-0 wide:flex wide:h-[13%] wide:flex-col">
           <TornEdge className="block h-[clamp(2rem,5vw,4.5rem)] w-full" />
           <div className="h-10 bg-carbon wide:h-auto wide:flex-1" />
         </div>

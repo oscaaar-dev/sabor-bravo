@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "assets:brand": "node scripts/build-brand-assets.mjs"
+    "assets:brand": "node scripts/build-brand-assets.mjs",
+    "assets:hero": "node scripts/build-hero-bg.mjs"
   },
   "dependencies": {
     "next": "^16.4.0",
