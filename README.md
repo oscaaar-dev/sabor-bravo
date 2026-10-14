@@ -19,7 +19,7 @@ npm run dev                  # en otra terminal: http://localhost:3000
 ```bash
 npm run lint         # ESLint
 npm run typecheck    # TypeScript
-npm test             # 177 pruebas sobre un PostgreSQL real (aislamiento, pedidos, roles, informes…)
+npm test             # 188 pruebas sobre un PostgreSQL real (aislamiento, pedidos, roles, informes…)
 npm run build        # compilación de producción (no necesita base de datos)
 npm run e2e:server   # (otra terminal, tras npm run build) app en :3108 con un Google local falso
 npm run test:e2e     # recorrido de 17 pasos en Chrome real

@@ -64,3 +64,6 @@ secrets.*
 
 # Base de datos de desarrollo local (npm run db:dev) y artefactos de pruebas
 .data/
+
+# Lo regenera `next dev` en cada arranque; no es parte del proyecto
+/AGENTS.md

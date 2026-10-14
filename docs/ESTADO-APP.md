@@ -17,6 +17,7 @@
 | Informes | Ventas, ticket medio, por día y modalidad, más vendidos, descuentos (solo pedidos completados) | `src/server/domain/reports.ts` |
 | CSV | Pedidos y líneas, con protección contra inyección de fórmulas | `src/app/dashboard/[slug]/informes/csv` |
 | Roles | Propietario / administrador / personal, comprobados en servidor | `src/lib/permissions.ts`, `src/server/domain/team.ts` |
+| Planes y precios (página pública) | Tres planes con precio mensual por mercado: Perú en soles (15 / 35 / 55) e Internacional en dólares (4 / 10 / 16), definidos por separado (sin tipo de cambio). Selector «Perú · PEN» / «Internacional · USD», Perú por defecto. **Solo presentación**: no hay cobros ni suscripciones conectados | `src/content/plans.ts`, `src/components/sections/Plans.tsx` |
 
 ## Modelo de seguridad
 
@@ -58,7 +59,7 @@ Hasta que existan las dos variables, el botón se ve pero lleva a «El acceso co
 
 ## Cómo se comprobó
 
-- `npm test`: **177 pruebas** sobre un PostgreSQL 17 real embebido (aislamiento, pedidos, idempotencia, concurrencia, estados, informes, roles, validación, seguridad y 38 del acceso con Google: firma/nonce/audiencia/emisor/caducidad del id_token, PKCE, state de un solo uso, política de vinculación). Mutación manual: 10 de 11 mutantes de la app detectados (el undécimo es equivalente) y 13 de 13 del acceso con Google (+1 de cookie/state detectado por el recorrido e2e).
+- `npm test`: **188 pruebas** sobre un PostgreSQL 17 real embebido (aislamiento, pedidos, idempotencia, concurrencia, estados, informes, roles, validación, seguridad y 39 del acceso con Google: firma/nonce/audiencia/emisor/caducidad del id_token, PKCE, state de un solo uso, política de vinculación y una carrera de primer acceso forzada de forma determinista). Mutación manual: 10 de 11 mutantes de la app detectados (el undécimo es equivalente) y 13 de 13 del acceso con Google (+1 de cookie/state detectado por el recorrido e2e).
 - `npm run test:e2e`: recorrido de **17 pasos en Chrome real** (los 12 de la app + 5 del acceso con Google contra un «Google» local que verifica PKCE/state/secreto/uso único). Arranca antes `npm run build && npm run e2e:server` (puerto 3108).
 - `npm run db:smoke[:prod]`: flujo completo dentro de una transacción que se **deshace**, para comprobar una base real sin dejar datos. Ejecutado contra Supabase: 13/13.
 
@@ -86,5 +87,7 @@ npm test                # pruebas
 - Subida de imágenes (solo URL https).
 - CSP estricta con nonces (hoy parcial).
 - Pagos online (a propósito: se paga al recibir).
+- **Cobro de los planes**: los precios de la página son informativos. No hay pasarela de pagos, suscripciones, facturación ni cobros en USD; tampoco está decidido si los importes incluyen IGV ni cómo se tratan los impuestos internacionales.
+- Los planes anuncian «Varias sucursales» y «Permisos por sucursal» (Cadena), pero las sucursales aún no existen (ver arriba).
 - Notificaciones push/sonido de pedido nuevo (hoy: consulta periódica cada 8–10 s).
 - No probado en producción con tráfico real ni con una auditoría externa.
