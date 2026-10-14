@@ -29,3 +29,35 @@ desktop.ini
 npm-debug.log*
 playwright-report/
 test-results/
+
+# claves SSH/GPG, certificados privados y credenciales de servicios: NUNCA versionar
+id_rsa*
+id_dsa*
+id_ecdsa*
+id_ed25519*
+*.ppk
+*.pfx
+*.p8
+*.jks
+*.keystore
+*.gpg
+credentials*.json
+*credentials*.json
+service-account*.json
+*serviceAccount*.json
+*-adminsdk-*.json
+secrets.*
+*.secret
+*.secrets
+
+# archivos de configuración que suelen contener tokens de acceso
+.npmrc
+.yarnrc
+.yarnrc.yml
+.pypirc
+.netrc
+.htpasswd
+*.local.json
+
+# estado local de herramientas de despliegue (Netlify CLI): no es secreto, pero es de cada equipo
+.netlify/
