@@ -15,6 +15,11 @@ function publicFileExists(publicUrl: string): boolean {
   return fs.existsSync(path.join(process.cwd(), "public", publicUrl));
 }
 
+/** ¿Existe ya la foto de este plato en public/? (solo servidor). */
+export function hasDishPhoto(slug: DishSlug): boolean {
+  return publicFileExists(DISHES[slug].file);
+}
+
 /**
  * Foto de plato en marco circular (aro tinta + aro blanco cálido) que rellena a su contenedor.
  * La foto es CUADRADA y se recorta en círculo (`object-cover`); no necesita fondo transparente.

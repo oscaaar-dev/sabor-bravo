@@ -13,6 +13,12 @@ const OUT = path.join(root, "public", "images", "dishes");
 const SIZE = 1400;
 const FILL = 0.97; // radio del círculo / radio del mayor círculo inscrito en el plato (<1 = margen de seguridad)
 const ALPHA_MIN = 40; // píxeles con alfa menor se ignoran (bordes difuminados)
+// Ajuste manual del círculo (en píxeles del original) para platos cuya silueta engaña al cálculo automático:
+// el postre (vaso sobre plato plano) saldría ampliado solo a la crema, y el arroz chaufa incluiría la sombra bajo el bol.
+const OVERRIDE = {
+  postre: { cx: 1000, cy: 550, r: 420 },
+  "arroz-chaufa": { cx: 1000, cy: 565, r: 460 },
+};
 mkdirSync(OUT, { recursive: true });
 
 for (const file of readdirSync(IN).filter((f) => f.endsWith(".webp"))) {
@@ -30,8 +36,8 @@ for (const file of readdirSync(IN).filter((f) => f.endsWith(".webp"))) {
         if (y < minY) minY = y;
         if (y > maxY) maxY = y;
       }
-  const cx = (minX + maxX) / 2;
-  const cy = (minY + maxY) / 2;
+  let cx = (minX + maxX) / 2;
+  let cy = (minY + maxY) / 2;
 
   // 2) radio del mayor círculo, centrado en el plato, que cabe dentro de la silueta opaca:
   //    distancia mínima del centro a cualquier píxel transparente (o al borde de la caja)
@@ -39,6 +45,8 @@ for (const file of readdirSync(IN).filter((f) => f.endsWith(".webp"))) {
   for (let y = minY; y <= maxY; y++)
     for (let x = minX; x <= maxX; x++)
       if (data[(y * w + x) * 4 + 3] < 128) inner = Math.min(inner, Math.hypot(x - cx, y - cy));
+  const ov = OVERRIDE[slug];
+  if (ov) { cx = ov.cx; cy = ov.cy; inner = ov.r / FILL; } // el ajuste manual manda sobre el cálculo
   const side = Math.round(2 * inner * FILL); // lado del cuadrado de recorte en píxeles de origen
 
   // 3) lienzo transparente de `side`×`side` con el plato centrado, escalado a 1400

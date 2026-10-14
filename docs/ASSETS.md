@@ -18,12 +18,16 @@ Nota: la palabra "SABOR BRAVO" del logo es **negra**; sobre fondos oscuros hay q
 
 ## Pendientes: fotografías de platos
 
-**Entregadas (3 de 8):** `ceviche`, `pollo-brasa` y `lomo-saltado`. Los originales (recortes con fondo transparente) están en
+**Entregadas (6 de 8):** `ceviche`, `pollo-brasa`, `lomo-saltado`, `arroz-chaufa`, `postre` y `cafe`. Los originales (recortes con fondo transparente) están en
 `recursos_sabor/platos/*.webp` y NO se modifican; `npm run assets:dishes` genera `public/images/dishes/<plato>.png`
 (1400×1400, ampliado para que el plato llene todo el círculo; los extremos de platos ovalados quedan recortados). Para cambiar una foto: reemplazar el original y volver a ejecutar el script.
 
-**Pendientes:** `cafe`, `chicha-morada`, `arroz-chaufa`, `pizza` y `postre`. Mientras falten, `DishPhoto` dibuja una reserva circular con la etiqueta "Foto pendiente".
+**Pendientes:** `chicha-morada` y `pizza`. Mientras falten, `DishPhoto` dibuja una reserva circular con la etiqueta "Foto pendiente".
+
+**Hero de seis círculos:** la portada muestra **seis** círculos (`src/components/HeroDishes.tsx`) cuando existen las seis fotos: `pollo-brasa`, `ceviche`, `lomo-saltado`, `arroz-chaufa`, `postre` y `cafe` (ya están todas). Si faltara alguna se muestra la composición clásica de tres, así que la web publicada nunca enseña reservas "Foto pendiente" en la portada. Las posiciones están calculadas para celular, tablet/"modo PC" y panorámico sin que se toquen círculos, etiquetas, lema ni texto.
 Para añadirlas: guardar el recorte como `recursos_sabor/platos/<plato>.webp` y ejecutar `npm run assets:dishes` (se detecta solo, sin tocar código).
+
+**Fotos con fondo blanco** (p. ej. las de ChatGPT sin transparencia): guardarlas como `recursos_sabor/platos/originales/<plato>.jpg` (o `.png`) y ejecutar `npm run assets:cutout` (quita el fondo blanco y las sombras suaves, descarta rótulos sueltos y crea el `.webp` con transparencia) y después `npm run assets:dishes`. Los JPG originales no se modifican. El círculo de `postre` y `arroz-chaufa` está ajustado a mano en `scripts/build-dish-photos.mjs` (`OVERRIDE`) porque su silueta engañaba al cálculo automático.
 
 Especificaciones comunes:
 
@@ -38,10 +42,10 @@ Especificaciones comunes:
 | `pollo-brasa.png` | Pollo a la brasa con papas | Hero (plato principal), demo El Gallo Bravo |
 | `lomo-saltado.png` | Lomo saltado | Hero (abajo a la izquierda), demo Sabor Criollo |
 | `chicha-morada.png` | Vaso de chicha morada | Reservado |
-| `cafe.png` | Café / bebida caliente | Demo Café del Valle |
-| `arroz-chaufa.png` | Arroz chaufa | Reservado (chifa) |
+| `cafe.png` | Café / bebida caliente | Hero (seis círculos), demo Café del Valle |
+| `arroz-chaufa.png` | Arroz chaufa | Hero (seis círculos); chifa |
 | `pizza.png` | Pizza | Reservado (pizzería) |
-| `postre.png` | Postre / pastelería | Reservado (pastelería) |
+| `postre.png` | Postre / pastelería | Hero (seis círculos); pastelería |
 
 El manifiesto con estos nombres es `src/content/dishes.ts`.
 

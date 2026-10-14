@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit",
     "assets:brand": "node scripts/build-brand-assets.mjs",
     "assets:hero": "node scripts/build-hero-bg.mjs",
+    "assets:cutout": "node scripts/cutout-white-bg.mjs",
     "assets:dishes": "node scripts/build-dish-photos.mjs"
   },
   "dependencies": {
