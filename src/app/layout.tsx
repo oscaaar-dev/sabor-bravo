@@ -1,11 +1,19 @@
 import type { Metadata, Viewport } from "next";
-import { Lobster, Montserrat } from "next/font/google";
+import { Caveat, Lobster, Montserrat } from "next/font/google";
 import "./globals.css";
 
 const lobster = Lobster({
   weight: "400",
   subsets: ["latin"],
   variable: "--font-lobster",
+  display: "swap",
+});
+
+/** Letra de pincel/pluma del bloque de texto del hero (muestra aportada por el cliente). */
+const caveat = Caveat({
+  weight: ["600", "700"],
+  subsets: ["latin"],
+  variable: "--font-caveat",
   display: "swap",
 });
 
@@ -33,7 +41,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es-PE" className={`${lobster.variable} ${montserrat.variable}`}>
+    <html lang="es-PE" className={`${lobster.variable} ${montserrat.variable} ${caveat.variable}`}>
       <body>{children}</body>
     </html>
   );

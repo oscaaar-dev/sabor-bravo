@@ -36,28 +36,26 @@ export function Hero() {
         <div className={`container-sb relative z-20 ${COL_LEFT}`}>
           <h1
             id="hero-titulo"
-            className="sb-rise text-[clamp(2.7rem,11.5vw,4.6rem)] [animation-delay:80ms] wide:text-[clamp(2.8rem,min(5.3vw,7.6svh),6.6rem)]"
+            className="sb-rise font-hero text-[clamp(3.4rem,14.5vw,5.8rem)] font-bold leading-[0.92] [animation-delay:80ms] wide:text-[clamp(3.4rem,min(6.6vw,9.4svh),8.4rem)]"
           >
-            <span className="h-display block">Tu menú</span>
-            <span className="h-script relative -ml-1 block -rotate-3 py-[0.04em] text-[1.18em] text-rojo">
-              tiene mucho
-            </span>
-            <span className="h-display block">que decir</span>
+            <span className="block">Tu menú</span>
+            <span className="relative -ml-1 block -rotate-2 text-[1.12em] text-rojo">tiene mucho</span>
+            <span className="block">que decir</span>
           </h1>
 
-          <p className="sb-rise mt-6 max-w-[34rem] text-[1.0625rem] leading-relaxed [animation-delay:180ms] wide:mt-4 wide:max-w-[34rem] wide:text-[clamp(1rem,1.2vw,1.15rem)]">
+          <p className="sb-rise mt-5 max-w-[34rem] font-hero text-[1.5rem] font-semibold leading-[1.12] [animation-delay:180ms] wide:mt-3 wide:max-w-[34rem] wide:text-[clamp(1.4rem,1.7vw,1.75rem)]">
             Carta digital con QR, pedidos de mesa, recojo o delivery y precios que cambias tú.
             Sin depender de un programador.
           </p>
 
           <div className="sb-rise mt-7 flex flex-col gap-4 [animation-delay:260ms] sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-6 sm:gap-y-3 wide:mt-5">
-            <Link href={SIGNUP_HREF} className="btn-brutal btn-rojo btn-rojo-vivo !text-[1.2rem]">
+            <Link href={SIGNUP_HREF} className="btn-brutal btn-rojo btn-rojo-vivo !font-hero !text-[1.75rem] !font-bold">
               Crear mi menú digital
               <span aria-hidden="true">→</span>
             </Link>
             <a
               href="#demos"
-              className="text-base font-extrabold underline decoration-rojo decoration-[3px] underline-offset-[6px] hover:decoration-carbon"
+              className="font-hero text-[1.5rem] font-bold underline decoration-rojo decoration-[3px] underline-offset-[6px] hover:decoration-carbon"
             >
               Explorar una demostración
             </a>

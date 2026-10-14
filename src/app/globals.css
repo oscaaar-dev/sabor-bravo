@@ -21,6 +21,7 @@
   /* Tipografía */
   --font-display: var(--font-lobster), "Brush Script MT", cursive;
   --font-sans: var(--font-montserrat), system-ui, sans-serif;
+  --font-hero: var(--font-caveat), "Brush Script MT", cursive;
 
   /* Bordes y sombras duras */
   --radius-brutal: 6px;
