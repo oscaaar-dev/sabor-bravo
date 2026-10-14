@@ -1,13 +1,17 @@
 import type { Metadata } from "next";
-import { StubPage } from "@/components/StubPage";
+import { redirect } from "next/navigation";
+import { AuthShell } from "@/components/app/ui";
+import { RegisterForm } from "@/components/app/AuthForms";
+import { getCurrentUser } from "@/server/auth/current";
 
-export const metadata: Metadata = { title: "Crear cuenta" };
+export const metadata: Metadata = { title: "Crear cuenta", robots: { index: false } };
 
-export default function RegistroPage() {
+export default async function RegistroPage() {
+  if (await getCurrentUser()) redirect("/dashboard");
   return (
-    <StubPage title="Crear cuenta" script="muy pronto">
-      <p>El registro de restaurantes se implementa en la Fase 2 (autenticación y roles).</p>
-      <p>Esta página no recoge ni envía datos todavía.</p>
-    </StubPage>
+    <AuthShell title="Crea tu cuenta" script="en un minuto">
+      <p className="mb-5 text-tinta-suave">Después podrás crear tu restaurante, armar la carta y recibir pedidos.</p>
+      <RegisterForm />
+    </AuthShell>
   );
 }

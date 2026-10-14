@@ -1,13 +1,22 @@
 import type { Metadata } from "next";
-import { StubPage } from "@/components/StubPage";
+import { redirect } from "next/navigation";
+import { AuthShell } from "@/components/app/ui";
+import { LoginForm } from "@/components/app/AuthForms";
+import { getCurrentUser } from "@/server/auth/current";
+import { safeNext } from "@/lib/safe-next";
 
-export const metadata: Metadata = { title: "Iniciar sesión" };
+export const metadata: Metadata = { title: "Iniciar sesión", robots: { index: false } };
 
-export default function LoginPage() {
+interface LoginPageProps {
+  searchParams: Promise<{ next?: string }>;
+}
+
+export default async function LoginPage({ searchParams }: LoginPageProps) {
+  const { next } = await searchParams;
+  if (await getCurrentUser()) redirect(safeNext(next));
   return (
-    <StubPage title="Iniciar sesión" script="pronto">
-      <p>El acceso con cuenta se implementa en la Fase 2 (autenticación y roles).</p>
-      <p>Esta página no recoge ni envía credenciales todavía.</p>
-    </StubPage>
+    <AuthShell title="Bienvenido" script="de vuelta">
+      <LoginForm next={safeNext(next)} />
+    </AuthShell>
   );
 }

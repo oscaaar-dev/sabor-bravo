@@ -61,3 +61,6 @@ secrets.*
 
 # estado local de herramientas de despliegue (Netlify CLI): no es secreto, pero es de cada equipo
 .netlify/
+
+# Base de datos de desarrollo local (npm run db:dev) y artefactos de pruebas
+.data/

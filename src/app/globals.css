@@ -219,6 +219,122 @@ body {
     text-transform: uppercase;
   }
 
+  /* ───── Formularios y panel de la aplicación ───── */
+  .field-label {
+    display: block;
+    margin-bottom: 0.35rem;
+    font-weight: 800;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .input {
+    display: block;
+    width: 100%;
+    min-height: 3rem;
+    padding: 0.7rem 0.9rem;
+    border: var(--border-w) solid var(--color-tinta);
+    border-radius: var(--radius-brutal);
+    background: var(--color-blanco);
+    color: var(--color-tinta);
+    font: inherit;
+    line-height: 1.3;
+  }
+  .input::placeholder {
+    color: var(--color-tinta-suave);
+    opacity: 0.75;
+  }
+  .input:focus-visible {
+    outline: 3px solid var(--color-petroleo);
+    outline-offset: 2px;
+    box-shadow: var(--shadow-brutal-sm);
+  }
+  .input[aria-invalid="true"] {
+    background: var(--color-coral-claro);
+  }
+  .input:disabled {
+    background: var(--color-arena);
+    color: var(--color-tinta-suave);
+    cursor: not-allowed;
+  }
+  textarea.input {
+    min-height: 5.5rem;
+    resize: vertical;
+  }
+  .field-error {
+    margin-top: 0.35rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+  }
+  .field-error::before {
+    content: "⚠ ";
+  }
+  .alert {
+    padding: 0.8rem 1rem;
+    border: var(--border-w) solid var(--color-tinta);
+    border-radius: var(--radius-brutal);
+    font-weight: 700;
+    box-shadow: var(--shadow-brutal-sm);
+  }
+  .alert-error {
+    background: var(--color-coral-claro);
+  }
+  .alert-ok {
+    background: var(--color-blanco);
+    border-color: var(--color-petroleo);
+    color: var(--color-petroleo);
+  }
+  .btn-brutal:disabled,
+  .btn-brutal[aria-disabled="true"] {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: var(--shadow-brutal-sm);
+  }
+  .tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.55rem 1rem;
+    border: var(--border-w) solid var(--color-tinta);
+    border-radius: var(--radius-brutal);
+    background: var(--color-blanco);
+    font-weight: 800;
+    font-size: 0.9rem;
+    white-space: nowrap;
+  }
+  .tab:hover {
+    background: var(--color-coral-claro);
+  }
+  .tab[aria-current="page"] {
+    background: var(--color-petroleo);
+    color: var(--color-blanco);
+    box-shadow: var(--shadow-brutal-sm);
+  }
+  .badge {
+    display: inline-block;
+    padding: 0.15rem 0.6rem;
+    border: 2px solid var(--color-tinta);
+    border-radius: 999px;
+    background: var(--color-blanco);
+    font-weight: 800;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .badge-coral {
+    background: var(--color-coral);
+  }
+  .badge-petroleo {
+    background: var(--color-petroleo);
+    color: var(--color-blanco);
+  }
+  .badge-gris {
+    background: var(--color-arena);
+    color: var(--color-tinta-suave);
+  }
+
   /* Texto fantasma de marca sobre fondos oscuros */
   .ghost-word {
     font-family: var(--font-display);

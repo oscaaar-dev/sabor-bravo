@@ -1,20 +1,30 @@
 # Sabor Bravo
 
-Plataforma de menús digitales y pedidos para restaurantes del Perú. Este repositorio contiene la **landing** (Next.js) y las
-rutas provisorias del menú público y del panel. **Todavía no hay base de datos, autenticación ni pedidos reales**: ver
-[`docs/ADR-0001-arquitectura.md`](docs/ADR-0001-arquitectura.md).
+Plataforma de menús digitales y pedidos para restaurantes del Perú: landing, registro, panel del restaurante (carta, pedidos, QR,
+informes, equipo) y carta pública con carrito. **Qué funciona, cómo se comprobó y qué falta**: [`docs/ESTADO-APP.md`](docs/ESTADO-APP.md).
+Arquitectura: [`docs/ADR-0001-arquitectura.md`](docs/ADR-0001-arquitectura.md).
 
 ## Requisitos
 - Node.js ≥ 20.9 (se fija la 24 en `.nvmrc`) y npm.
 
+## Puesta en marcha local
+```bash
+npm ci
+cp .env.example .env.local   # ya apunta a la base local
+npm run db:dev               # PostgreSQL local embebido (puerto 54329) + migraciones. Déjalo corriendo
+npm run dev                  # en otra terminal: http://localhost:3000
+```
+
 ## Comandos
 ```bash
-npm ci              # instalación reproducible
-npm run dev         # desarrollo en http://localhost:3000
-npm run lint        # ESLint
-npm run typecheck   # TypeScript (tsc --noEmit)
-npm run build       # compilación de producción
-npm start           # sirve la compilación
+npm run lint         # ESLint
+npm run typecheck    # TypeScript
+npm test             # 139 pruebas sobre un PostgreSQL real (aislamiento, pedidos, roles, informes…)
+npm run build        # compilación de producción (no necesita base de datos)
+npm run test:e2e     # recorrido de 12 pasos en Chrome real (app en :3108 con SITE_URL=http://localhost:3108)
+npm run db:migrate   # aplica db/migrations a la base de .env.local (solo bases locales)
+npm run db:check     # inspección de solo lectura de la base
+npm run db:smoke     # flujo completo dentro de una transacción que se deshace
 ```
 
 ## Recursos gráficos
@@ -22,19 +32,23 @@ Los originales de marca están en `recursos_sabor/` y **no se modifican**. Los d
 ```bash
 npm run assets:brand    # logos
 npm run assets:hero     # fondo del hero y lema
+npm run assets:cutout   # recorta fotos de platos con fondo blanco
 npm run assets:dishes   # fotos de platos (recursos_sabor/platos/*.webp)
 ```
-Detalle y fotos pendientes: [`docs/ASSETS.md`](docs/ASSETS.md).
+Detalle: [`docs/ASSETS.md`](docs/ASSETS.md).
 
-## Desplegar en Netlify
-Next.js ≥ 13.5 funciona en Netlify **sin configuración adicional**: el adaptador se instala solo y `next/image` usa el CDN de
-imágenes de Netlify. No hace falta `netlify.toml`.
+## Producción: Supabase + Netlify
+- **Base de datos**: PostgreSQL en Supabase. La cadena de conexión (*Transaction pooler*, puerto 6543) va en `.env.production.local`
+  (**ignorado por git**) y se migra con `npm run db:migrate:prod`. Las migraciones remotas exigen `--allow-remote`: `db:migrate`
+  se niega a tocar bases que no sean locales.
+- **Netlify** (Next.js se detecta solo, sin `netlify.toml`): rama `main`, `npm run build`, Node de `.nvmrc`. Variables de entorno
+  en *Site configuration → Environment variables*:
 
-1. En Netlify: *Add new project → Import an existing project → GitHub* y elige este repositorio.
-2. Rama de producción: `main`. Netlify detecta Next.js y propone `npm run build`; deja los valores por defecto.
-3. La versión de Node sale de `.nvmrc` (24).
-4. **Variables de entorno: ninguna.** La app no usa ninguna ahora mismo. Cuando se añada Supabase se documentarán en un `.env.example`
-   (las claves secretas nunca se suben a git).
+  | Variable | Valor | Secreta |
+  |---|---|---|
+  | `DATABASE_URL` | cadena del *Transaction pooler* de Supabase | **sí** |
+  | `SITE_URL` | `https://sabor-bravo.netlify.app` (o tu dominio), sin barra final | no |
 
 ## Seguridad
-`.env*`, claves y `node_modules` están en `.gitignore`. No subir credenciales al repositorio.
+`.env*` (salvo `.env.example`), claves y `node_modules` están en `.gitignore`. No subir credenciales al repositorio.
+Modelo de seguridad y límites conocidos: [`docs/ESTADO-APP.md`](docs/ESTADO-APP.md).

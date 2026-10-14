@@ -8,25 +8,44 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
+    "test": "tsx scripts/run-tests.mts",
+    "test:e2e": "tsx --env-file-if-exists=.env.local test/e2e/journey.mts",
+    "db:dev": "tsx scripts/dev-db.mts",
+    "db:migrate": "tsx --env-file-if-exists=.env.local scripts/db-migrate.mts",
+    "db:migrate:prod": "tsx --env-file=.env.production.local scripts/db-migrate.mts --allow-remote",
+    "db:check": "tsx --env-file-if-exists=.env.local scripts/db-check.mts",
+    "db:check:prod": "tsx --env-file=.env.production.local scripts/db-check.mts",
+    "db:smoke": "tsx --env-file-if-exists=.env.local scripts/db-smoke.mts",
+    "db:smoke:prod": "tsx --env-file=.env.production.local scripts/db-smoke.mts",
     "assets:brand": "node scripts/build-brand-assets.mjs",
     "assets:hero": "node scripts/build-hero-bg.mjs",
     "assets:cutout": "node scripts/cutout-white-bg.mjs",
     "assets:dishes": "node scripts/build-dish-photos.mjs"
   },
   "dependencies": {
+    "drizzle-orm": "^0.45.4",
     "next": "^16.4.0",
+    "postgres": "^3.4.9",
+    "qrcode": "^1.5.4",
     "react": "^19.3.0",
-    "react-dom": "^19.3.0"
+    "react-dom": "^19.3.0",
+    "server-only": "^0.0.1",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^22",
+    "@types/qrcode": "^1.5.6",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "embedded-postgres": "^17.10.0-beta.17",
     "eslint": "^9",
     "eslint-config-next": "^16.4.0",
+    "puppeteer-core": "^24.43.1",
     "sharp": "^0.34.0",
     "tailwindcss": "^4.3.3",
-    "typescript": "^5.9.0"
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.0",
+    "vitest": "^5.0.4"
   }
 }
