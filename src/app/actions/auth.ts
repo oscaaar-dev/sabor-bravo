@@ -2,7 +2,10 @@
 
 import { redirect } from "next/navigation";
 import { clientIp, endSession, startSession } from "@/server/auth/current";
+import { clearFlowCookie, OAUTH_LINK_COOKIE, readFlowCookie } from "@/server/auth/oauth/flow";
 import { getDb } from "@/server/db";
+import { homePathFor } from "@/server/domain/businesses";
+import { linkWithPassword } from "@/server/domain/oauth";
 import { authenticate, registerUser } from "@/server/domain/users";
 import { hit, LIMITS, waitMessage } from "@/server/rate-limit";
 import { safeNext } from "@/lib/safe-next";
@@ -51,4 +54,35 @@ export async function loginAction(_prev: FormState | undefined, formData: FormDa
 export async function logoutAction(): Promise<void> {
   await endSession();
   redirect("/");
+}
+
+/**
+ * Confirma el enlace con Google: exige la CONTRASEÑA de la cuenta existente (prueba de propiedad). Limitado por IP y por
+ * enlace para que no se pueda adivinar la contraseña desde aquí. Al acabar emite la misma sesión de siempre.
+ */
+export async function linkGoogleAction(_prev: FormState | undefined, formData: FormData): Promise<FormState> {
+  const token = await readFlowCookie(OAUTH_LINK_COOKIE);
+  if (!token) redirect("/login?error=google_estado");
+  const password = formObject(formData).password ?? "";
+  if (!password || password.length > 128) return { message: "Escribe la contraseña de tu cuenta.", fieldErrors: { password: ["Escribe tu contraseña"] } };
+
+  const db = getDb();
+  const [byIp, byToken] = await Promise.all([
+    hit(db, `link:ip:${await clientIp()}`, { limit: 20, windowSec: 15 * 60 }),
+    hit(db, `link:token:${token}`, { limit: 5, windowSec: 10 * 60 }),
+  ]);
+  if (!byIp.ok || !byToken.ok) return { message: waitMessage(Math.max(byIp.retryAfterSec, byToken.retryAfterSec)) };
+
+  const result = await linkWithPassword(db, token, password);
+  if (!result.ok) {
+    if (result.code === "expired") {
+      await clearFlowCookie(OAUTH_LINK_COOKIE);
+      redirect("/login?error=google_estado");
+    }
+    return { message: result.message, fieldErrors: result.fieldErrors };
+  }
+  await clearFlowCookie(OAUTH_LINK_COOKIE);
+  await endSession();
+  await startSession(result.data.userId);
+  redirect(await homePathFor(db, result.data.userId));
 }

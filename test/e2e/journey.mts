@@ -11,6 +11,7 @@ import assert from "node:assert/strict";
 import postgres from "postgres";
 import QRCode from "qrcode";
 import puppeteer, { type BrowserContext, type Page } from "puppeteer-core";
+import { startMockGoogle, type Persona } from "./mock-google.mts";
 
 const BASE = process.env.BASE_URL ?? "http://localhost:3108";
 const CHROME = process.env.CHROME_PATH ?? "C:/Program Files/Google/Chrome/Application/chrome.exe";
@@ -51,6 +52,12 @@ if (dbUrl && /@(127\.0\.0\.1|localhost)[:/]/.test(dbUrl)) {
   await sql.end({ timeout: 5 });
   console.log("(límites de intentos de la base LOCAL reiniciados para esta ejecución)");
 }
+
+// «Google» local para el flujo OAuth. La app debe arrancarse con GOOGLE_CLIENT_ID/SECRET y OAUTH_TEST_MODE=1 apuntando a él
+// (ver docs/ESTADO-APP.md); si no, los pasos de Google se omiten y se avisa.
+const MOCK_PORT = Number(process.env.MOCK_GOOGLE_PORT ?? 4455);
+const mock = await startMockGoogle({ port: MOCK_PORT, clientId: process.env.GOOGLE_CLIENT_ID ?? "test-client-id.apps.googleusercontent.com", clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "test-client-secret" });
+const googleSql = dbUrl && /@(127\.0\.0\.1|localhost)[:/]/.test(dbUrl) ? postgres(dbUrl, { max: 1, onnotice: () => {} }) : null;
 
 const browser = await puppeteer.launch({ executablePath: CHROME, headless: true, args: ["--no-sandbox"] });
 const newPage = async (ctx: BrowserContext, w = 1280, h = 900) => {
@@ -477,10 +484,247 @@ try {
     for (const p of ["pedidos", "carta", "qr/image?format=png"]) assert.equal(await status(sp, `/dashboard/${SLUG}/${p}`), 404, `un ex-miembro no debe acceder a /${p}`);
     await staffCtx.close();
   });
+  // ───────────── Acceso con Google (contra el «Google» local: ver mock-google.mts) ─────────────
+  const probe = await fetch(`${BASE}/auth/google/start`, { redirect: "manual" });
+  const googleReady = (probe.headers.get("location") ?? "").startsWith(`http://127.0.0.1:${MOCK_PORT}/authorize`);
+  if (!googleReady || !googleSql) {
+    console.log("\n  (pasos de Google omitidos: la app no está arrancada con el Google local; ver docs/ESTADO-APP.md)");
+  } else {
+    const P = (tag: string, over: Partial<Persona> = {}): Persona => ({ sub: `sub-${tag}-${stamp}`, email: `${tag}.${stamp}@gmail.test`, name: `Persona ${tag}`, emailVerified: true, ...over });
+    const count = async (email: string) => Number((await googleSql`select count(*)::int as n from users where email = ${email}`)[0]?.n);
+    /** Recorre el flujo SIN navegador: inicio → «Google» → URL de retorno. Devuelve la cookie del flujo y el retorno. */
+    const flow = async (persona: Persona, next?: string) => {
+      mock.setPersona(persona);
+      const r1 = await fetch(`${BASE}/auth/google/start${next ? `?next=${encodeURIComponent(next)}` : ""}`, { redirect: "manual" });
+      const authUrl = r1.headers.get("location") ?? "";
+      const r2 = await fetch(authUrl, { redirect: "manual" });
+      return { cookie: r1.headers.getSetCookie().map((c) => c.split(";")[0]).join("; "), setCookie: r1.headers.getSetCookie(), authUrl, cb: r2.headers.get("location") ?? "" };
+    };
+    const callback = async (cb: string, cookie?: string) => {
+      const r = await fetch(cb, { redirect: "manual", headers: cookie ? { cookie } : {} });
+      return { status: r.status, location: r.headers.get("location") ?? "", cookies: r.headers.getSetCookie().map((c) => c.split(";")[0]).join("; ") };
+    };
+    const SLUG_G = `google-${stamp}`;
+    const G_NEW = P("nuevo");
+
+    await step("13. Google: botón con logotipo en /registro y /login, separador y arranque del flujo real (PKCE, state, nonce)", async () => {
+      const gp = await newPage(await browser.createBrowserContext());
+      for (const [path, keep] of [["/registro", ["Crear cuenta", "Inicia sesión", "Tu nombre"]], ["/login", ["Iniciar sesión", "Regístrate gratis", "Correo"]]] as const) {
+        await go(gp, path);
+        await snap(gp, `google${path.replace("/", "-")}`);
+        const info = await gp.evaluate(() => {
+          const b = document.querySelector<HTMLAnchorElement>("[data-testid=google-button]");
+          const form = document.querySelector("form");
+          return {
+            text: b?.innerText.trim(),
+            href: b?.getAttribute("href"),
+            colors: [...(b?.querySelectorAll("svg path") ?? [])].map((p) => p.getAttribute("fill")),
+            sep: document.querySelector("[role=separator]")?.textContent?.trim(),
+            aboveForm: !!b && !!form && !!(b.compareDocumentPosition(form) & Node.DOCUMENT_POSITION_FOLLOWING),
+            body: document.body.innerText,
+          };
+        });
+        assert.equal(info.text, "Continuar con Google");
+        assert.equal(info.href, "/auth/google/start");
+        assert.deepEqual(info.colors, ["#EA4335", "#4285F4", "#FBBC05", "#34A853"], "logotipo oficial de Google (4 colores)");
+        assert.match(info.sep ?? "", /o con tu correo/i);
+        assert.ok(info.aboveForm, "el botón debe ir ENCIMA del formulario");
+        for (const k of keep) assert.ok(info.body.toLowerCase().includes(k.toLowerCase()), `falta «${k}» en ${path}`);
+      }
+      const r = await flow(P("ui"));
+      const u = new URL(r.authUrl);
+      assert.equal(u.origin, `http://127.0.0.1:${MOCK_PORT}`);
+      const q = Object.fromEntries(u.searchParams);
+      assert.equal(q.response_type, "code");
+      assert.equal(q.scope, "openid email profile");
+      assert.equal(q.code_challenge_method, "S256");
+      assert.equal(q.code_challenge?.length, 43, "PKCE: challenge de SHA-256 en base64url");
+      assert.ok((q.state?.length ?? 0) >= 40 && (q.nonce?.length ?? 0) >= 20, "state y nonce aleatorios");
+      assert.equal(q.redirect_uri, `${BASE}/auth/google/callback`);
+      assert.ok(!r.authUrl.includes("client_secret") && !r.authUrl.includes("test-client-secret"), "el secreto del cliente nunca viaja en la URL");
+      assert.ok(!r.authUrl.includes("code_verifier"), "el verificador PKCE nunca viaja a Google en la URL");
+      const c = r.setCookie.join(" | ");
+      assert.match(c, /sb_oauth=/);
+      assert.match(c, /HttpOnly/i);
+      assert.match(c, /SameSite=Lax/i);
+      assert.match(c, /Max-Age=600/i);
+      assert.ok(!c.includes(q.nonce as string), "el nonce no se guarda en la cookie");
+    });
+
+    await step("14. Google: usuario NUEVO crea su cuenta sin contraseña, va a crear su restaurante y no ve datos ajenos", async () => {
+      mock.setPersona(G_NEW);
+      const gctx = await browser.createBrowserContext();
+      const gp = await newPage(gctx);
+      await go(gp, "/registro");
+      const before = mock.log.authorize.length;
+      // doble clic inmediato: el segundo se ignora (no se duplica el envío)
+      await gp.evaluate(() => {
+        const a = document.querySelector<HTMLAnchorElement>("[data-testid=google-button]");
+        a?.click();
+        a?.click();
+      });
+      await waitPath(gp, /^\/dashboard\/nuevo/);
+      assert.equal(mock.log.authorize.length - before, 1, "un doble clic debe iniciar UN solo flujo");
+      const tok = mock.log.token.at(-1);
+      assert.ok(tok?.get("code_verifier") && tok.get("client_secret") === "test-client-secret" && tok.get("grant_type") === "authorization_code", "el intercambio usa PKCE y el secreto en el servidor");
+      const cookies = await gp.cookies();
+      const session = cookies.find((c) => c.name.endsWith("sb_session"));
+      assert.ok(session?.httpOnly && session.sameSite === "Lax", "sesión HttpOnly/Lax: la MISMA cookie que usa el correo/contraseña");
+      assert.ok(!cookies.some((c) => c.name.endsWith("sb_oauth")), "la cookie temporal del flujo se borra");
+      const u = (await googleSql`select name, password_hash, email_verified_at, id from users where email = ${G_NEW.email}`)[0];
+      assert.ok(u, "la cuenta debe existir");
+      assert.equal(u.password_hash, null, "cuenta de Google sin contraseña");
+      assert.ok(u.email_verified_at, "correo verificado");
+      assert.equal(u.name, G_NEW.name);
+      assert.equal(Number((await googleSql`select count(*)::int as n from memberships where user_id = ${u.id}`)[0]?.n), 0, "sin restaurantes ni permisos especiales");
+      assert.equal(Number((await googleSql`select count(*)::int as n from oauth_identities where user_id = ${u.id} and provider = 'google' and subject = ${G_NEW.sub}`)[0]?.n), 1);
+      await snap(gp, "google-nuevo-crear-restaurante");
+      // crea su restaurante (flujo existente)
+      await fill(gp, "#name", "Local de Google");
+      await fill(gp, "#slug", SLUG_G);
+      await submit(gp, "#name");
+      await waitPath(gp, new RegExp(`^/dashboard/${SLUG_G}/carta`));
+      // aislamiento: no ve nada del restaurante de otra persona
+      for (const p of ["pedidos", "carta", "ajustes", "informes", "equipo", "qr/image?format=png"]) assert.equal(await status(gp, `/dashboard/${SLUG}/${p}`), 404, `un usuario de Google no debe acceder a /${p} de otro restaurante`);
+      assert.equal(await status(gp, `/dashboard/${SLUG_G}/pedidos`), 200);
+      (globalThis as Record<string, unknown>).__gctx = gctx;
+    });
+
+    await step("15. Google: el usuario existente vuelve al MISMO perfil y a su panel; sin contraseña no entra por correo", async () => {
+      const gp = (await ((globalThis as Record<string, unknown>).__gctx as BrowserContext).pages())[0] as Page;
+      await go(gp, `/dashboard/${SLUG_G}/carta`);
+      await gp.click("header form button[type=submit]"); // cerrar sesión
+      await waitPath(gp, /^\/$/);
+      mock.setPersona(G_NEW);
+      await go(gp, "/login");
+      await gp.click("[data-testid=google-button]");
+      await waitPath(gp, new RegExp(`^/dashboard/${SLUG_G}/pedidos`)); // con UN restaurante va directo a su panel
+      assert.equal(await count(G_NEW.email), 1, "no se debe duplicar la cuenta");
+      assert.equal(Number((await googleSql`select count(*)::int as n from oauth_identities where subject = ${G_NEW.sub}`)[0]?.n), 1);
+      assert.ok((await text(gp)).includes("Local de Google"), "debe conservar su restaurante");
+      await gp.click("header form button[type=submit]");
+      await waitPath(gp, /^\/$/);
+      await go(gp, "/login");
+      await fill(gp, "#email", G_NEW.email);
+      await fill(gp, "#password", "cualquier-clave-larga-123");
+      await submit(gp, "#password");
+      await waitText(gp, "Correo o contraseña incorrectos");
+    });
+
+    await step("16. Google: un correo que ya tiene cuenta con contraseña NO se vincula solo; exige la contraseña y no pierde su restaurante", async () => {
+      const G_LINK = P("vinculo", { email: OWNER.email });
+      mock.setPersona(G_LINK);
+      const lctx = await browser.createBrowserContext();
+      const lp = await newPage(lctx);
+      await go(lp, "/login");
+      await lp.click("[data-testid=google-button]");
+      await waitPath(lp, /^\/login\/vincular/);
+      await snap(lp, "google-vincular");
+      assert.equal(await status(lp, "/dashboard"), 307, "todavía NO hay sesión");
+      const t = await text(lp);
+      assert.ok(t.includes(OWNER.email) && t.includes("confirma que es tuya"));
+      assert.equal(await count(OWNER.email), 1, "no se creó una cuenta duplicada");
+      const ownerId = (await googleSql`select id from users where email = ${OWNER.email}`)[0]?.id;
+      const identities = async () => Number((await googleSql`select count(*)::int as n from oauth_identities where user_id = ${ownerId}`)[0]?.n);
+      assert.equal(await identities(), 0, "no se vincula solo porque el correo coincida");
+      // contraseña incorrecta: sigue sin vincular
+      await fill(lp, "#password", "contrasena-incorrecta-1");
+      await submit(lp, "#password");
+      await waitText(lp, "Contraseña incorrecta");
+      assert.equal(await identities(), 0);
+      assert.equal(await status(lp, "/dashboard"), 307);
+      // contraseña correcta: vincula, abre sesión y entra a SU panel con SU restaurante
+      await fill(lp, "#password", OWNER.password);
+      await submit(lp, "#password");
+      await waitPath(lp, new RegExp(`^/dashboard/${SLUG}/pedidos`));
+      assert.equal(await identities(), 1);
+      assert.equal(await count(OWNER.email), 1);
+      const t2 = await text(lp);
+      assert.ok(t2.includes("La Mar E2E") && t2.includes("Ana Cliente"), "conserva restaurante y pedidos");
+      assert.equal(await status(lp, `/dashboard/${SLUG}/ajustes`), 200, "sigue siendo propietario");
+      assert.equal(await status(lp, `/dashboard/${SLUG_G}/pedidos`), 404, "y no ve el restaurante de otra persona");
+      // el enlace ya no es reutilizable; a partir de ahora entra directo con Google y la contraseña sigue valiendo
+      assert.equal(await status(lp, "/login/vincular"), 307);
+      await lp.click("header form button[type=submit]");
+      await waitPath(lp, /^\/$/);
+      await go(lp, "/login");
+      await lp.click("[data-testid=google-button]");
+      await waitPath(lp, new RegExp(`^/dashboard/${SLUG}/pedidos`));
+      await lp.click("header form button[type=submit]");
+      await waitPath(lp, /^\/$/);
+      await go(lp, "/login");
+      await fill(lp, "#email", OWNER.email);
+      await fill(lp, "#password", OWNER.password);
+      await submit(lp, "#password");
+      await waitPath(lp, /^\/dashboard/);
+      assert.ok(!/login/.test(lp.url()));
+    });
+
+    await step("17. Google: ataques y errores del callback (state manipulado/repetido, otro navegador, correo sin verificar, nonce ajeno, cancelar, redirección abierta)", async () => {
+      // callback directo, sin haber empezado el flujo
+      const none = await callback(`${BASE}/auth/google/callback?code=x&state=${"a".repeat(43)}`);
+      assert.match(none.location, /\/login\?error=google_estado$/);
+      // flujo correcto → sesión VÁLIDA; repetir el mismo retorno falla (state de un solo uso)
+      const ok1 = await flow(P("replay"));
+      const done = await callback(ok1.cb, ok1.cookie);
+      assert.equal(done.status, 303);
+      assert.ok(done.location.endsWith("/dashboard/nuevo"), `usuario nuevo → crear restaurante (fue ${done.location})`);
+      const sess = done.cookies.split("; ").find((c) => c.includes("sb_session"));
+      assert.ok(sess, "el callback debe emitir la cookie de sesión");
+      assert.equal((await fetch(`${BASE}/dashboard/nuevo`, { redirect: "manual", headers: { cookie: sess } })).status, 200, "la sesión del callback es válida en el servidor");
+      assert.match((await callback(ok1.cb, ok1.cookie)).location, /\/login\?error=google_estado$/, "repetición del mismo retorno");
+      // state manipulado
+      const f2 = await flow(P("tamper"));
+      const tampered = new URL(f2.cb);
+      tampered.searchParams.set("state", "b".repeat(43));
+      assert.match((await callback(tampered.toString(), f2.cookie)).location, /error=google_estado$/);
+      // retorno de otro flujo con la cookie de este (login CSRF)
+      const fa = await flow(P("csrfa"));
+      const fb = await flow(P("csrfb"));
+      assert.match((await callback(fb.cb, fa.cookie)).location, /error=google_estado$/);
+      // sin cookie (otro navegador)
+      const f3 = await flow(P("sincookie"));
+      assert.match((await callback(f3.cb)).location, /error=google_estado$/);
+      assert.equal(await count(P("sincookie").email), 0);
+      // correo NO verificado por Google
+      const unv = P("sinverificar", { emailVerified: false });
+      const fu = await flow(unv);
+      assert.match((await callback(fu.cb, fu.cookie)).location, /error=google_correo_no_verificado$/);
+      assert.equal(await count(unv.email), 0, "no se crea cuenta con correo sin verificar");
+      // id_token de otro flujo (nonce distinto)
+      const bn = P("nonce", { badNonce: true });
+      const fn = await flow(bn);
+      assert.match((await callback(fn.cb, fn.cookie)).location, /error=google_fallo$/);
+      assert.equal(await count(bn.email), 0);
+      // el usuario cancela en Google
+      const fd = await flow(P("cancela", { deny: true }));
+      assert.match(fd.cb, /error=access_denied/);
+      assert.match((await callback(fd.cb, fd.cookie)).location, /error=google_cancelado$/);
+      // redirección abierta: next externo se ignora; next interno válido se respeta
+      const evil = await flow(G_NEW, "https://malo.com/robo");
+      const lo = (await callback(evil.cb, evil.cookie)).location;
+      assert.ok(lo.startsWith(BASE) && !lo.includes("malo.com"), `no debe redirigir fuera del sitio (fue ${lo})`);
+      const deep = await flow(G_NEW, `/dashboard/${SLUG_G}/qr`);
+      assert.equal((await callback(deep.cb, deep.cookie)).location, `${BASE}/dashboard/${SLUG_G}/qr`);
+      const sneaky = await flow(G_NEW, "//malo.com");
+      assert.ok(!(await callback(sneaky.cb, sneaky.cookie)).location.includes("malo.com"));
+      // la página de errores muestra mensajes claros (no técnicos)
+      const ep = await newPage(await browser.createBrowserContext());
+      for (const [code, msg] of [["google_cancelado", "Cancelaste"], ["google_estado", "caducó"], ["google_correo_no_verificado", "verificado"], ["google_fallo", "No se pudo completar"]] as const) {
+        await go(ep, `/login?error=${code}`);
+        assert.ok((await text(ep)).includes(msg), `mensaje de ${code}`);
+      }
+      await go(ep, "/registro?error=google_cancelado");
+      assert.ok((await text(ep)).includes("Cancelaste"));
+      await snap(ep, "google-error");
+    });
+  }
 } catch {
   process.exitCode = 1;
 } finally {
   await browser.close();
+  await mock.stop();
+  await googleSql?.end({ timeout: 5 });
   const failed = results.filter((r) => !r.ok);
   console.log(`\n${results.length - failed.length}/${results.length} pasos correctos${failed.length ? ` — FALLÓ: ${failed.map((f) => f.step).join("; ")}` : ""}\n`);
 }

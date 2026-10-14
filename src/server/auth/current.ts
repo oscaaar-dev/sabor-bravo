@@ -69,7 +69,9 @@ export async function startSession(userId: string): Promise<void> {
 export async function endSession(): Promise<void> {
   const store = await cookies();
   await destroySession(getDb(), store.get(SESSION_COOKIE)?.value);
-  store.delete(SESSION_COOKIE);
+  // Borrar = reenviar la cookie vacía y caducada CON los mismos atributos. Con `store.delete()` se perdería `Secure`, y los
+  // navegadores ignoran el borrado de una cookie con prefijo __Host- que no sea Secure (la cookie vieja se quedaría).
+  store.set(SESSION_COOKIE, "", { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "lax", path: "/", maxAge: 0, expires: new Date(0) });
 }
 
 /** IP del cliente para los límites de intentos. Netlify la fija en x-nf-client-connection-ip (no es falsificable). */

@@ -3,7 +3,7 @@
  * No modifica nada y nunca imprime la URL (lleva la contraseña): solo el servidor.
  *
  *   npm run db:check              → usa DATABASE_URL de .env.local (base local)
- *   npm run db:check:prod         → usa DATABASE_URL de .env.production.local (Supabase)
+ *   npm run db:check:prod         → usa DATABASE_URL de .env.supabase (Supabase)
  */
 import postgres from "postgres";
 import { isLocalDatabaseUrl } from "../src/server/db/migrate";

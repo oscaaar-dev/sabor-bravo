@@ -98,3 +98,14 @@ export async function getPublicBusiness(db: Db, slug: string): Promise<Business 
   const rows = await db.select().from(businesses).where(and(eq(businesses.slug, slug), eq(businesses.isPublished, true))).limit(1);
   return rows[0] ?? null;
 }
+
+/**
+ * Página de inicio de una persona tras entrar con Google: sin restaurantes → crear el primero; con uno solo → su panel
+ * de pedidos; con varios → la lista. (Mantiene las relaciones usuario-restaurante-rol: solo lee sus membresías.)
+ */
+export async function homePathFor(db: Db, userId: string): Promise<string> {
+  const list = await listUserBusinesses(db, userId);
+  if (list.length === 0) return "/dashboard/nuevo";
+  if (list.length === 1 && list[0]) return `/dashboard/${list[0].slug}/pedidos`;
+  return "/dashboard";
+}

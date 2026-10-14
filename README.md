@@ -19,9 +19,10 @@ npm run dev                  # en otra terminal: http://localhost:3000
 ```bash
 npm run lint         # ESLint
 npm run typecheck    # TypeScript
-npm test             # 139 pruebas sobre un PostgreSQL real (aislamiento, pedidos, roles, informes…)
+npm test             # 177 pruebas sobre un PostgreSQL real (aislamiento, pedidos, roles, informes…)
 npm run build        # compilación de producción (no necesita base de datos)
-npm run test:e2e     # recorrido de 12 pasos en Chrome real (app en :3108 con SITE_URL=http://localhost:3108)
+npm run e2e:server   # (otra terminal, tras npm run build) app en :3108 con un Google local falso
+npm run test:e2e     # recorrido de 17 pasos en Chrome real
 npm run db:migrate   # aplica db/migrations a la base de .env.local (solo bases locales)
 npm run db:check     # inspección de solo lectura de la base
 npm run db:smoke     # flujo completo dentro de una transacción que se deshace
@@ -38,7 +39,7 @@ npm run assets:dishes   # fotos de platos (recursos_sabor/platos/*.webp)
 Detalle: [`docs/ASSETS.md`](docs/ASSETS.md).
 
 ## Producción: Supabase + Netlify
-- **Base de datos**: PostgreSQL en Supabase. La cadena de conexión (*Transaction pooler*, puerto 6543) va en `.env.production.local`
+- **Base de datos**: PostgreSQL en Supabase. La cadena de conexión (*Transaction pooler*, puerto 6543) va en `.env.supabase`
   (**ignorado por git**) y se migra con `npm run db:migrate:prod`. Las migraciones remotas exigen `--allow-remote`: `db:migrate`
   se niega a tocar bases que no sean locales.
 - **Netlify** (Next.js se detecta solo, sin `netlify.toml`): rama `main`, `npm run build`, Node de `.nvmrc`. Variables de entorno
@@ -48,6 +49,8 @@ Detalle: [`docs/ASSETS.md`](docs/ASSETS.md).
   |---|---|---|
   | `DATABASE_URL` | cadena del *Transaction pooler* de Supabase | **sí** |
   | `SITE_URL` | `https://sabor-bravo.netlify.app` (o tu dominio), sin barra final | no |
+  | `GOOGLE_CLIENT_ID` | ID de cliente de OAuth de Google (ver `docs/ESTADO-APP.md`) | no |
+  | `GOOGLE_CLIENT_SECRET` | secreto de ese cliente | **sí** |
 
 ## Seguridad
 `.env*` (salvo `.env.example`), claves y `node_modules` están en `.gitignore`. No subir credenciales al repositorio.

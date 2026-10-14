@@ -14,7 +14,7 @@ if (!url) {
   process.exit(1);
 }
 if (url.includes("PEGA_AQUI")) {
-  console.error("DATABASE_URL todavía tiene el marcador de la plantilla: abre .env.production.local y pega ahí tu cadena de conexión de Supabase.");
+  console.error("DATABASE_URL todavía tiene el marcador de la plantilla: abre .env.supabase y pega ahí tu cadena de conexión de Supabase.");
   process.exit(1);
 }
 const allowRemote = process.argv.includes("--allow-remote");

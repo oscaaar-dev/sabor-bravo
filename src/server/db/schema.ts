@@ -11,8 +11,42 @@ export const users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
   email: text("email").notNull(),
   name: text("name").notNull(),
-  passwordHash: text("password_hash").notNull(),
+  /** null = cuenta creada con Google (sin contraseña). */
+  passwordHash: text("password_hash"),
+  emailVerifiedAt: ts("email_verified_at"),
   createdAt: ts("created_at").notNull().defaultNow(),
+});
+
+/** Identidad de un proveedor externo (Google) enlazada a una cuenta. Se enlaza por `subject` (id estable), nunca por correo. */
+export const oauthIdentities = pgTable("oauth_identities", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: uuid("user_id").notNull(),
+  provider: text("provider").notNull(),
+  subject: text("subject").notNull(),
+  email: text("email").notNull(),
+  createdAt: ts("created_at").notNull().defaultNow(),
+  lastLoginAt: ts("last_login_at").notNull().defaultNow(),
+});
+
+/** Flujo OAuth en curso: verificador PKCE, nonce y destino. Un solo uso; caduca a los 10 minutos. */
+export const oauthStates = pgTable("oauth_states", {
+  stateHash: text("state_hash").primaryKey(),
+  codeVerifier: text("code_verifier").notNull(),
+  nonce: text("nonce").notNull(),
+  nextPath: text("next_path").notNull(),
+  createdAt: ts("created_at").notNull().defaultNow(),
+  expiresAt: ts("expires_at").notNull(),
+});
+
+/** Enlace pendiente: el correo de Google coincide con una cuenta con contraseña; se confirma con esa contraseña. */
+export const oauthPendingLinks = pgTable("oauth_pending_links", {
+  tokenHash: text("token_hash").primaryKey(),
+  userId: uuid("user_id").notNull(),
+  provider: text("provider").notNull(),
+  subject: text("subject").notNull(),
+  email: text("email").notNull(),
+  createdAt: ts("created_at").notNull().defaultNow(),
+  expiresAt: ts("expires_at").notNull(),
 });
 
 export const sessions = pgTable("sessions", {

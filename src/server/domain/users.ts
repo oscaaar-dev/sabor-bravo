@@ -28,8 +28,10 @@ export async function registerUser(db: Db, input: { name: string; email: string;
 export async function authenticate(db: Db, email: string, password: string): Promise<PublicUser | null> {
   const rows = await db.select().from(users).where(eq(users.email, email)).limit(1);
   const row = rows[0];
-  const valid = await verifyPassword(password, row ? row.passwordHash : await dummyHash());
-  if (!row || !valid) return null;
+  // Cuenta inexistente O creada con Google (sin contraseña): se compara contra un hash de relleno, mismo tiempo y mismo resultado.
+  const hash = row?.passwordHash ?? (await dummyHash());
+  const valid = await verifyPassword(password, hash);
+  if (!row || !row.passwordHash || !valid) return null;
   return { id: row.id, email: row.email, name: row.name };
 }
 
