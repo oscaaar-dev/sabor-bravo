@@ -40,8 +40,8 @@ export function Nav() {
     <header
       className={`fixed inset-x-0 top-0 z-50 border-b-[3px] transition-colors duration-200 ${
         solid
-          ? "border-carbon bg-crema"
-          : "border-carbon bg-crema wide:border-transparent wide:bg-transparent"
+          ? "border-tinta bg-blanco"
+          : "border-tinta bg-blanco wide:border-transparent wide:bg-transparent"
       }`}
     >
       <div className="container-sb flex h-[var(--nav-h)] items-center justify-between gap-4">
@@ -65,7 +65,7 @@ export function Nav() {
             <a
               key={l.href}
               href={l.href}
-              className="text-[0.72rem] font-extrabold uppercase tracking-wide text-carbon xl:text-[0.8rem] decoration-rojo decoration-[3px] underline-offset-[10px] hover:underline"
+              className="text-[0.72rem] font-extrabold uppercase tracking-wide text-tinta xl:text-[0.8rem] decoration-coral decoration-[3px] underline-offset-[10px] hover:underline"
             >
               {l.short ? (
                 <>
@@ -80,10 +80,10 @@ export function Nav() {
         </nav>
 
         <div className="hidden items-center gap-3 whitespace-nowrap lg:flex">
-          <Link href={LOGIN_HREF} className="btn-brutal btn-crema btn-sm">
+          <Link href={LOGIN_HREF} className="btn-brutal btn-blanco btn-sm">
             Iniciar sesión
           </Link>
-          <Link href={SIGNUP_HREF} className="btn-brutal btn-rojo btn-sm">
+          <Link href={SIGNUP_HREF} className="btn-brutal btn-coral btn-sm">
             Crear cuenta
           </Link>
         </div>
@@ -91,7 +91,7 @@ export function Nav() {
         <button
           ref={toggleRef}
           type="button"
-          className="btn-brutal btn-crema btn-sm lg:hidden"
+          className="btn-brutal btn-blanco btn-sm lg:hidden"
           aria-expanded={open}
           aria-controls="menu-movil"
           onClick={() => setOpen((v) => !v)}
@@ -101,23 +101,23 @@ export function Nav() {
       </div>
 
       {open ? (
-        <div id="menu-movil" className="border-t-[3px] border-carbon bg-crema lg:hidden">
+        <div id="menu-movil" className="border-t-[3px] border-tinta bg-blanco lg:hidden">
           <nav aria-label="Principal móvil" className="container-sb flex flex-col py-3">
             {NAV_LINKS.map((l) => (
               <a
                 key={l.href}
                 href={l.href}
                 onClick={() => setOpen(false)}
-                className="border-b-2 border-carbon/15 py-4 text-lg font-extrabold uppercase tracking-wide"
+                className="border-b-2 border-tinta/15 py-4 text-lg font-extrabold uppercase tracking-wide"
               >
                 {l.label}
               </a>
             ))}
             <div className="flex flex-col gap-3 py-5">
-              <Link href={LOGIN_HREF} className="btn-brutal btn-crema">
+              <Link href={LOGIN_HREF} className="btn-brutal btn-blanco">
                 Iniciar sesión
               </Link>
-              <Link href={SIGNUP_HREF} className="btn-brutal btn-rojo">
+              <Link href={SIGNUP_HREF} className="btn-brutal btn-coral">
                 Crear cuenta
               </Link>
             </div>

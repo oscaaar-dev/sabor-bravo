@@ -44,8 +44,8 @@ export function BrushSplash({ className = "" }: { className?: string }) {
       className={className}
       preserveAspectRatio="none"
     >
-      <path d={BLOB_B} fill="#FF9D2E" transform="translate(40 30) rotate(-5 500 400)" />
-      <path d={BLOB_A} fill="#F12F24" transform="translate(-10 0) rotate(4 500 400)" />
+      <path d={BLOB_B} fill="var(--color-coral-claro)" transform="translate(40 30) rotate(-5 500 400)" />
+      <path d={BLOB_A} fill="var(--color-coral)" transform="translate(-10 0) rotate(4 500 400)" />
     </svg>
   );
 }
@@ -65,7 +65,7 @@ function tornPoints(seed: number): string {
 }
 const TORN_TOP = tornPoints(5);
 
-export function TornEdge({ fill = "#171412", className = "" }: { fill?: string; className?: string }) {
+export function TornEdge({ fill = "var(--color-petroleo)", className = "" }: { fill?: string; className?: string }) {
   return (
     <svg
       viewBox="0 0 1200 100"
@@ -80,7 +80,7 @@ export function TornEdge({ fill = "#171412", className = "" }: { fill?: string; 
 }
 
 /** Líneas de impacto dibujadas a mano, como las del fondo oficial. */
-export function Burst({ className = "", stroke = "#171412" }: { className?: string; stroke?: string }) {
+export function Burst({ className = "", stroke = "var(--color-tinta)" }: { className?: string; stroke?: string }) {
   return (
     <svg viewBox="0 0 120 100" aria-hidden="true" focusable="false" className={className} fill="none">
       <g stroke={stroke} strokeWidth="6" strokeLinecap="round">
@@ -94,7 +94,7 @@ export function Burst({ className = "", stroke = "#171412" }: { className?: stri
 }
 
 /** Flecha curva dibujada a mano que acompaña a las anotaciones en Lobster. */
-export function HandArrow({ className = "", stroke = "#171412" }: { className?: string; stroke?: string }) {
+export function HandArrow({ className = "", stroke = "var(--color-tinta)" }: { className?: string; stroke?: string }) {
   return (
     <svg viewBox="0 0 90 90" aria-hidden="true" focusable="false" className={className} fill="none">
       <path
@@ -108,8 +108,8 @@ export function HandArrow({ className = "", stroke = "#171412" }: { className?: 
   );
 }
 
-/** Subrayado de pincel rojo para titulares. */
-export function BrushUnderline({ className = "" }: { className?: string }) {
+/** Subrayado de pincel para titulares. Por defecto coral; sobre fondo coral pasar `fill="var(--color-petroleo)"`. */
+export function BrushUnderline({ className = "", fill = "var(--color-coral)" }: { className?: string; fill?: string }) {
   return (
     <svg
       viewBox="0 0 400 28"
@@ -120,7 +120,7 @@ export function BrushUnderline({ className = "" }: { className?: string }) {
     >
       <path
         d="M4 20 C 90 8, 200 6, 396 12 C 250 14, 120 18, 20 24 Z"
-        fill="#F12F24"
+        fill={fill}
       />
     </svg>
   );

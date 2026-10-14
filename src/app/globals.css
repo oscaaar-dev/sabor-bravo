@@ -2,21 +2,32 @@
 
 /*
  * SABOR BRAVO — tokens de diseño
- * Neobrutalismo gastronómico editorial: bordes carbón visibles, sombras duras
- * sin desenfoque, bloques de color y trazos de pincel tomados del fondo oficial.
+ * Neobrutalismo gastronómico editorial: bordes tinta visibles, sombras duras
+ * sin desenfoque, bloques de color y trazos de pincel.
  */
 @theme {
-  /* Paleta oficial */
-  --color-crema: #fff4df;
-  --color-papel: #f7e9cf; /* tono medio del papel del fondo oficial (hero) */
-  --color-rojo: #f12f24;
-  --color-naranja: #ff9d2e;
-  --color-carbon: #171412;
+  /* Paleta oficial: azul petróleo, blanco cálido, coral y tinta (texto oscuro) */
+  --color-petroleo: #155e63;
+  --color-blanco: #fff9ef;
+  --color-coral: #f17c67;
+  --color-tinta: #202321;
 
-  /* Derivados funcionales (mismo matiz, solo para estados y marcas de agua) */
-  --color-crema-oscuro: #ecdcb8; /* marca de agua / bordes suaves sobre crema */
-  --color-rojo-oscuro: #c9201a; /* hover/active del rojo; contraste AA con texto crema */
-  --color-carbon-suave: #3a342f; /* texto secundario sobre crema (AA) */
+  /*
+   * Derivados funcionales (mismo matiz; solo estados, superficies alternas y texto sobre petróleo).
+   * Contrastes WCAG medidos: tinta/blanco 15,1:1 · petróleo/blanco 7,1:1 · tinta/coral 5,9:1 ·
+   * blanco/petróleo 7,1:1 · coral-claro/petróleo 4,5:1 · tinta/coral-oscuro 4,7:1.
+   * El coral NO se usa como color de texto sobre blanco (2,6:1) ni sobre petróleo (2,8:1).
+   */
+  --color-arena: #f5ead8; /* superficie clara alterna (secciones, tarjetas, reservas de foto) */
+  --color-coral-oscuro: #e5644e; /* hover/active del coral; texto tinta encima 4,7:1 */
+  --color-coral-claro: #ffb8a8; /* acentos y texto sobre petróleo (4,5:1) y superficies suaves */
+  --color-tinta-suave: #3f4643; /* texto secundario sobre blanco/arena (AA) */
+  /*
+   * Papel de la imagen de fondo del hero (public/images/hero/fondo-hero.png). Debe coincidir con el
+   * tono de esa imagen para que el borde no se note; solo lo usa el hero. Si se regenera el fondo
+   * con otra paleta (npm run assets:hero), unificar este token con --color-arena.
+   */
+  --color-papel: #f7e9cf;
 
   /* Tipografía */
   --font-display: var(--font-lobster), "Brush Script MT", cursive;
@@ -25,10 +36,10 @@
 
   /* Bordes y sombras duras */
   --radius-brutal: 6px;
-  --shadow-brutal-sm: 3px 3px 0 0 #171412;
-  --shadow-brutal: 6px 6px 0 0 #171412;
-  --shadow-brutal-lg: 10px 10px 0 0 #171412;
-  --shadow-brutal-rojo: 6px 6px 0 0 #f12f24;
+  --shadow-brutal-sm: 3px 3px 0 0 var(--color-tinta);
+  --shadow-brutal: 6px 6px 0 0 var(--color-tinta);
+  --shadow-brutal-lg: 10px 10px 0 0 var(--color-tinta);
+  --shadow-brutal-coral: 6px 6px 0 0 var(--color-coral);
 
   /* Breakpoints: móvil primero; el hero editorial pasa a composición ancha en lg */
   --breakpoint-sm: 40rem;
@@ -55,8 +66,8 @@ html {
 }
 
 body {
-  background: var(--color-crema);
-  color: var(--color-carbon);
+  background: var(--color-blanco);
+  color: var(--color-tinta);
   font-family: var(--font-sans);
   font-weight: 400;
   font-size: 1rem;
@@ -65,14 +76,19 @@ body {
 }
 
 ::selection {
-  background: var(--color-rojo);
-  color: var(--color-crema);
+  background: var(--color-coral);
+  color: var(--color-tinta);
 }
 
 :focus-visible {
-  outline: 3px solid var(--color-carbon);
+  outline: 3px solid var(--color-tinta);
   outline-offset: 3px;
   border-radius: 2px;
+}
+/* Sobre fondo petróleo el aro de foco tinta casi no se vería (2,1:1): se invierte a blanco cálido */
+.bg-petroleo :focus-visible,
+.bg-petroleo:focus-visible {
+  outline-color: var(--color-blanco);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -122,7 +138,7 @@ body {
     text-transform: uppercase;
   }
 
-  /* Botones brutalistas: borde carbón, sombra dura, se hunden al presionar */
+  /* Botones brutalistas: borde tinta, sombra dura, se hunden al presionar */
   .btn-brutal {
     display: inline-flex;
     align-items: center;
@@ -130,7 +146,7 @@ body {
     gap: 0.6rem;
     min-height: 3rem;
     padding: 0.75rem 1.5rem;
-    border: var(--border-w) solid var(--color-carbon);
+    border: var(--border-w) solid var(--color-tinta);
     border-radius: var(--radius-brutal);
     font-family: var(--font-sans);
     font-weight: 800;
@@ -145,34 +161,32 @@ body {
   }
   .btn-brutal:hover {
     transform: translate(2px, 2px);
-    box-shadow: 4px 4px 0 0 var(--color-carbon);
+    box-shadow: 4px 4px 0 0 var(--color-tinta);
   }
   .btn-brutal:active {
     transform: translate(6px, 6px);
-    box-shadow: 0 0 0 0 var(--color-carbon);
+    box-shadow: 0 0 0 0 var(--color-tinta);
   }
-  /* Texto pequeño sobre rojo: usa el rojo oscuro (5,2:1). El rojo vivo (3,7:1) solo con texto grande. */
-  .btn-rojo {
-    background: var(--color-rojo-oscuro);
-    color: var(--color-crema);
+  /* Acción principal: coral con texto tinta (5,9:1; vale para cualquier tamaño). Hover/active: coral oscuro (4,7:1). */
+  .btn-coral {
+    background: var(--color-coral);
+    color: var(--color-tinta);
   }
-  .btn-rojo-vivo {
-    background: var(--color-rojo);
+  .btn-coral:hover,
+  .btn-coral:active {
+    background: var(--color-coral-oscuro);
   }
-  .btn-rojo-vivo:hover {
-    background: var(--color-rojo-oscuro);
+  .btn-blanco {
+    background: var(--color-blanco);
+    color: var(--color-tinta);
   }
-  .btn-crema {
-    background: var(--color-crema);
-    color: var(--color-carbon);
+  .btn-petroleo {
+    background: var(--color-petroleo);
+    color: var(--color-blanco);
+    box-shadow: 6px 6px 0 0 var(--color-coral);
   }
-  .btn-carbon {
-    background: var(--color-carbon);
-    color: var(--color-crema);
-    box-shadow: 6px 6px 0 0 var(--color-rojo);
-  }
-  .btn-carbon:hover {
-    box-shadow: 4px 4px 0 0 var(--color-rojo);
+  .btn-petroleo:hover {
+    box-shadow: 4px 4px 0 0 var(--color-coral);
   }
   .btn-sm {
     min-height: 2.75rem;
@@ -181,13 +195,13 @@ body {
     box-shadow: var(--shadow-brutal-sm);
   }
   .btn-sm:hover {
-    box-shadow: 1px 1px 0 0 var(--color-carbon);
+    box-shadow: 1px 1px 0 0 var(--color-tinta);
   }
 
   /* Superficies con contorno y sombra dura */
   .panel-brutal {
-    background: var(--color-crema);
-    border: var(--border-w) solid var(--color-carbon);
+    background: var(--color-blanco);
+    border: var(--border-w) solid var(--color-tinta);
     border-radius: var(--radius-brutal);
     box-shadow: var(--shadow-brutal);
   }
@@ -195,7 +209,7 @@ body {
   /* Sticker: bloque de color inclinado con borde */
   .sticker {
     display: inline-block;
-    border: var(--border-w) solid var(--color-carbon);
+    border: var(--border-w) solid var(--color-tinta);
     border-radius: var(--radius-brutal);
     box-shadow: var(--shadow-brutal-sm);
     padding: 0.35rem 0.8rem;
@@ -205,7 +219,7 @@ body {
     text-transform: uppercase;
   }
 
-  /* Aspecto de papel crema sobre carbón: texto fantasma de marca */
+  /* Texto fantasma de marca sobre fondos oscuros */
   .ghost-word {
     font-family: var(--font-display);
     line-height: 0.8;

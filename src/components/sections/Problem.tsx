@@ -15,17 +15,17 @@ const ROWS = [
 
 export function Problem() {
   return (
-    <section className="bg-crema py-[var(--section-y)]" aria-labelledby="problema-titulo">
+    <section className="bg-blanco py-[var(--section-y)]" aria-labelledby="problema-titulo">
       <div className="container-sb grid gap-12 lg:grid-cols-12 lg:gap-8">
         <div className="lg:col-span-5">
-          <p className="eyebrow text-rojo-oscuro">El problema de casi toda carta</p>
+          <p className="eyebrow text-petroleo">El problema de casi toda carta</p>
           <h2
             id="problema-titulo"
             className="mt-4 text-[clamp(2.2rem,5.2vw,4.6rem)]"
           >
             <span className="h-display block">Tus platos</span>
             <span className="h-display block">merecen</span>
-            <span className="h-script block -rotate-2 text-[1.3em] text-rojo">más que un PDF</span>
+            <span className="h-script block -rotate-2 text-[1.3em] text-petroleo">más que un PDF</span>
           </h2>
         </div>
 
@@ -33,18 +33,18 @@ export function Problem() {
           {ROWS.map((row, i) => (
             <li
               key={row.hoy}
-              className={`grid gap-4 border-t-[3px] border-carbon py-7 sm:grid-cols-2 sm:gap-8 ${
+              className={`grid gap-4 border-t-[3px] border-tinta py-7 sm:grid-cols-2 sm:gap-8 ${
                 i === ROWS.length - 1 ? "border-b-[3px]" : ""
               }`}
             >
               <div>
-                <p className="eyebrow text-carbon-suave">Hoy</p>
-                <p className="mt-2 text-carbon-suave line-through decoration-rojo decoration-[3px]">
+                <p className="eyebrow text-tinta-suave">Hoy</p>
+                <p className="mt-2 text-tinta-suave line-through decoration-coral decoration-[3px]">
                   {row.hoy}
                 </p>
               </div>
               <div>
-                <p className="eyebrow text-rojo-oscuro">Con Sabor Bravo</p>
+                <p className="eyebrow text-petroleo">Con Sabor Bravo</p>
                 <p className="mt-2 font-bold">{row.con}</p>
               </div>
             </li>

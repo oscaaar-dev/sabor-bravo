@@ -16,7 +16,7 @@ function publicFileExists(publicUrl: string): boolean {
 }
 
 /**
- * Foto de plato en marco circular (aro carbón + aro crema) que rellena a su contenedor.
+ * Foto de plato en marco circular (aro tinta + aro blanco cálido) que rellena a su contenedor.
  * La foto es CUADRADA y se recorta en círculo (`object-cover`); no necesita fondo transparente.
  * Si el PNG todavía no existe (ver docs/ASSETS.md), dibuja una reserva con la misma forma.
  */
@@ -28,15 +28,15 @@ export function DishPhoto({ slug, sizes, priority = false, className = "" }: Dis
     <div
       role={hasPhoto ? undefined : "img"}
       aria-label={hasPhoto ? undefined : `${dish.label} (foto pendiente)`}
-      className={`@container absolute inset-0 rounded-full bg-carbon p-[2.4%] ${className}`}
+      className={`@container absolute inset-0 rounded-full bg-tinta p-[2.4%] ${className}`}
     >
-      <div className="h-full w-full rounded-full bg-crema p-[2.8%]">
-        <div className="relative h-full w-full overflow-hidden rounded-full bg-papel">
+      <div className="h-full w-full rounded-full bg-blanco p-[2.8%]">
+        <div className="relative h-full w-full overflow-hidden rounded-full bg-arena">
           {hasPhoto ? (
             <Image src={dish.file} alt={dish.label} fill sizes={sizes} priority={priority} className="object-cover" />
           ) : (
             <div className="grid h-full w-full place-items-center">
-              <p className="hidden text-center text-[0.62rem] font-bold uppercase leading-tight tracking-wider text-carbon-suave @[7rem]:block">
+              <p className="hidden text-center text-[0.62rem] font-bold uppercase leading-tight tracking-wider text-tinta-suave @[7rem]:block">
                 Foto
                 <br />
                 pendiente

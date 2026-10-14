@@ -14,7 +14,7 @@ export default function HomePage() {
     <>
       <a
         href="#contenido"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[60] focus:bg-crema focus:p-3 focus:font-extrabold"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[60] focus:bg-blanco focus:p-3 focus:font-extrabold"
       >
         Saltar al contenido
       </a>

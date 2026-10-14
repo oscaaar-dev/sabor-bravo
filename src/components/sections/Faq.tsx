@@ -27,26 +27,26 @@ const FAQS = [
 
 export function Faq() {
   return (
-    <section id="faq" className="bg-crema py-[var(--section-y)]" aria-labelledby="faq-titulo">
+    <section id="faq" className="bg-blanco py-[var(--section-y)]" aria-labelledby="faq-titulo">
       <div className="container-sb grid gap-10 lg:grid-cols-12">
         <h2 id="faq-titulo" className="text-[clamp(2.2rem,4.6vw,4rem)] lg:col-span-4">
           <span className="h-display block">Preguntas</span>
-          <span className="h-script block -rotate-2 text-[1.3em] text-rojo">frecuentes</span>
+          <span className="h-script block -rotate-2 text-[1.3em] text-petroleo">frecuentes</span>
         </h2>
 
         <div className="lg:col-span-8">
           {FAQS.map((f) => (
-            <details key={f.q} className="group border-t-[3px] border-carbon last:border-b-[3px]">
+            <details key={f.q} className="group border-t-[3px] border-tinta last:border-b-[3px]">
               <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 py-4 text-lg font-extrabold [&::-webkit-details-marker]:hidden">
                 {f.q}
                 <span
                   aria-hidden="true"
-                  className="grid size-8 shrink-0 place-items-center border-[3px] border-carbon bg-naranja text-xl leading-none transition-transform group-open:rotate-45"
+                  className="grid size-8 shrink-0 place-items-center border-[3px] border-tinta bg-coral text-xl leading-none transition-transform group-open:rotate-45"
                 >
                   +
                 </span>
               </summary>
-              <p className="max-w-2xl pb-5 text-carbon-suave">{f.a}</p>
+              <p className="max-w-2xl pb-5 text-tinta-suave">{f.a}</p>
             </details>
           ))}
         </div>

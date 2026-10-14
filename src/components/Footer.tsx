@@ -4,7 +4,7 @@ import { LOGIN_HREF, NAV_LINKS, SIGNUP_HREF } from "@/content/nav";
 
 export function Footer() {
   return (
-    <footer className="border-t-[3px] border-carbon bg-crema">
+    <footer className="border-t-[3px] border-tinta bg-blanco">
       <div className="container-sb grid gap-10 py-12 md:grid-cols-12">
         <div className="md:col-span-5">
           <Image
@@ -14,7 +14,7 @@ export function Footer() {
             height={96}
             className="h-24 w-auto"
           />
-          <p className="mt-4 max-w-xs text-carbon-suave">
+          <p className="mt-4 max-w-xs text-tinta-suave">
             Menús digitales y pedidos para restaurantes del Perú.
           </p>
         </div>
@@ -48,8 +48,8 @@ export function Footer() {
           </ul>
         </div>
       </div>
-      <div className="border-t-2 border-carbon/15">
-        <p className="container-sb py-4 text-sm text-carbon-suave">
+      <div className="border-t-2 border-tinta/15">
+        <p className="container-sb py-4 text-sm text-tinta-suave">
           © 2026 Sabor Bravo · Versión preliminar en desarrollo.
         </p>
       </div>
