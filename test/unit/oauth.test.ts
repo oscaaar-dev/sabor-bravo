@@ -188,6 +188,70 @@ describe("primer acceso con Google", () => {
     expect((await t.sql`select count(*)::int as n from users where email = ${c.email}`)[0]?.n).toBe(1);
     expect((await t.sql`select count(*)::int as n from oauth_identities where subject = ${c.sub}`)[0]?.n).toBe(1);
   });
+
+  /**
+   * Carrera DETERMINISTA (la de arriba depende del azar del planificador). Se fuerza el orden exacto que daba el error:
+   *   1. la visita B lee la identidad de Google → todavía no existe;
+   *   2. la visita A se ejecuta entera y CONFIRMA (crea la cuenta y su identidad);
+   *   3. la visita B sigue y lee el usuario por correo → ya existe, sin contraseña.
+   * Antes de la corrección, B devolvía «Ese correo ya está asociado a otra cuenta de Google» a la misma persona.
+   */
+  it("carrera forzada: si otra visita confirma entre las dos lecturas, es la MISMA persona entrando (no un conflicto)", async () => {
+    const c = claims();
+    let released = false;
+    const afterFirstRead = async () => {
+      if (released) return;
+      released = true;
+      const a = await signInWithGoogle(t.db, c); // la visita A termina y confirma mientras B está detenida
+      expect(a.ok && a.data.kind === "signed_in" && a.data.isNew).toBe(true);
+    };
+    // Envoltura de la base: tras resolverse la PRIMERA consulta (select) de la transacción, ejecuta `afterFirstRead` antes de seguir.
+    const pausable = <T extends object>(obj: T, first: boolean): T =>
+      new Proxy(obj, {
+        get(target, prop) {
+          if (first && prop === "then") {
+            const thenable = target as unknown as PromiseLike<unknown>;
+            return (res: (v: unknown) => unknown, rej: (e: unknown) => unknown) => thenable.then(async (v) => (await afterFirstRead(), v)).then(res, rej);
+          }
+          const v = Reflect.get(target, prop, target);
+          if (typeof v !== "function") return v;
+          return (...args: unknown[]) => {
+            const r = (v as (...a: unknown[]) => unknown).apply(target, args);
+            return r && typeof r === "object" ? pausable(r as object, first) : r;
+          };
+        },
+      });
+    const racingDb = new Proxy(t.db, {
+      get(target, prop) {
+        if (prop !== "transaction") {
+          const v = Reflect.get(target, prop, target);
+          return typeof v === "function" ? v.bind(target) : v;
+        }
+        return (cb: (tx: object) => Promise<unknown>, cfg?: unknown) =>
+          (target.transaction as (cb: unknown, cfg?: unknown) => Promise<unknown>).call(target, (tx: object) => {
+            let selects = 0;
+            return cb(
+              new Proxy(tx, {
+                get(txTarget, txProp) {
+                  const v = Reflect.get(txTarget, txProp, txTarget);
+                  if (typeof v !== "function") return v;
+                  if (txProp === "select") return (...a: unknown[]) => pausable((v as (...x: unknown[]) => object).apply(txTarget, a), ++selects === 1);
+                  return v.bind(txTarget);
+                },
+              }),
+            );
+          }, cfg);
+      },
+    }) as unknown as typeof t.db;
+
+    const b = await signInWithGoogle(racingDb, c);
+
+    expect(released).toBe(true); // la visita A sí se coló entre las dos lecturas de B (si no, la prueba no probaría nada)
+    expect(b.ok).toBe(true);
+    if (b.ok) expect(b.data.kind === "signed_in" && !b.data.isNew).toBe(true);
+    expect((await t.sql`select count(*)::int as n from users where email = ${c.email}`)[0]?.n).toBe(1);
+    expect((await t.sql`select count(*)::int as n from oauth_identities where subject = ${c.sub}`)[0]?.n).toBe(1);
+  });
 });
 
 describe("accesos posteriores", () => {

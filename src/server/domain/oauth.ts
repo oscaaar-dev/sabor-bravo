@@ -54,14 +54,21 @@ export async function signInWithGoogle(db: Db, claims: GoogleClaims, attempt = 0
   if (!claims.emailVerified) return fail("El correo de tu cuenta de Google no está verificado.", { code: "email_not_verified" });
   try {
     return await db.transaction(async (tx) => {
-      const identity = (await tx.select().from(oauthIdentities).where(and(eq(oauthIdentities.provider, "google"), eq(oauthIdentities.subject, claims.sub))).limit(1))[0];
-      if (identity) {
+      const findIdentity = async () => (await tx.select().from(oauthIdentities).where(and(eq(oauthIdentities.provider, "google"), eq(oauthIdentities.subject, claims.sub))).limit(1))[0];
+      const signedIn = async (identity: NonNullable<Awaited<ReturnType<typeof findIdentity>>>) => {
         await tx.update(oauthIdentities).set({ lastLoginAt: new Date() }).where(eq(oauthIdentities.id, identity.id));
         return ok<GoogleSignIn>({ kind: "signed_in", userId: identity.userId, isNew: false });
-      }
+      };
+
+      const identity = await findIdentity();
+      if (identity) return signedIn(identity);
 
       const existing = (await tx.select().from(users).where(eq(users.email, claims.email)).limit(1))[0];
       if (existing) {
+        // Carrera: otra visita simultánea con este mismo Google pudo confirmar entre las dos lecturas (cada sentencia ve lo ya
+        // confirmado). Antes de dar un conflicto se vuelve a mirar la identidad: si ya es de este `sub`, es la misma persona entrando.
+        const raced = await findIdentity();
+        if (raced) return signedIn(raced);
         if (!existing.passwordHash) return fail("Ese correo ya está asociado a otra cuenta de Google.", { code: "identity_conflict" });
         const other = (await tx.select({ id: oauthIdentities.id }).from(oauthIdentities).where(and(eq(oauthIdentities.userId, existing.id), eq(oauthIdentities.provider, "google"))).limit(1))[0];
         if (other) return fail("Esa cuenta ya está vinculada a otra cuenta de Google.", { code: "identity_conflict" });
