@@ -4,15 +4,15 @@ import { LOGIN_HREF, NAV_LINKS, SIGNUP_HREF } from "@/content/nav";
 
 export function Footer() {
   return (
-    <footer className="border-t-[3px] border-tinta bg-blanco">
+    <footer className="border-t border-tinta/10 bg-arena">
       <div className="container-sb grid gap-10 py-12 md:grid-cols-12">
         <div className="md:col-span-5">
           <Image
-            src="/images/brands/sabor-bravo-horizontal.png"
+            src="/images/brands/sabor-bravo-compacto.png"
             alt="Sabor Bravo"
             width={185}
             height={96}
-            className="h-24 w-auto"
+            className="h-14 w-auto"
           />
           <p className="mt-4 max-w-xs text-tinta-suave">
             Menús digitales y pedidos para restaurantes del Perú.

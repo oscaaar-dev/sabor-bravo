@@ -9,6 +9,7 @@ interface DishPhotoProps {
   sizes: string;
   priority?: boolean;
   className?: string;
+  shape?: "circle" | "tile";
 }
 
 function publicFileExists(publicUrl: string): boolean {
@@ -25,18 +26,19 @@ export function hasDishPhoto(slug: DishSlug): boolean {
  * La foto es CUADRADA y se recorta en círculo (`object-cover`); no necesita fondo transparente.
  * Si el PNG todavía no existe (ver docs/ASSETS.md), dibuja una reserva con la misma forma.
  */
-export function DishPhoto({ slug, sizes, priority = false, className = "" }: DishPhotoProps) {
+export function DishPhoto({ slug, sizes, priority = false, className = "", shape = "circle" }: DishPhotoProps) {
   const dish = DISHES[slug];
   const hasPhoto = publicFileExists(dish.file);
+  const tile = shape === "tile";
 
   return (
     <div
       role={hasPhoto ? undefined : "img"}
       aria-label={hasPhoto ? undefined : `${dish.label} (foto pendiente)`}
-      className={`@container absolute inset-0 rounded-full bg-tinta p-[2.4%] ${className}`}
+      className={`@container absolute inset-0 ${tile ? "rounded-lg" : "rounded-full bg-tinta p-[2.4%]"} ${className}`}
     >
-      <div className="h-full w-full rounded-full bg-blanco p-[2.8%]">
-        <div className="relative h-full w-full overflow-hidden rounded-full bg-arena">
+      <div className={`h-full w-full ${tile ? "" : "rounded-full bg-blanco p-[2.8%]"}`}>
+        <div className={`relative h-full w-full overflow-hidden bg-arena ${tile ? "rounded-lg" : "rounded-full"}`}>
           {hasPhoto ? (
             <Image src={dish.file} alt={dish.label} fill sizes={sizes} priority={priority} className="object-cover" />
           ) : (

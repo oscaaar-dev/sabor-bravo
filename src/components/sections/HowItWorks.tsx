@@ -1,48 +1,43 @@
-import { BrushUnderline } from "@/components/graphics";
-
-const STEPS = [
+const FLOW = [
   {
-    n: "1",
-    title: "Crea tu cuenta",
-    text: "Registra tu restaurante: nombre, logo, horarios, contacto y los tipos de pedido que atiendes.",
+    role: "01 · CONFIGURA",
+    title: "Arma tu menú",
+    text: "Organiza categorías, platos, precios y las modalidades de atención de tu local.",
   },
   {
-    n: "2",
-    title: "Arma tu carta",
-    text: "Categorías, productos con foto, variantes y extras. Cambia precios o pausa platos cuando quieras.",
+    role: "02 · COMPARTE",
+    title: "Publica tu QR",
+    text: "Tus clientes abren el menú desde el celular y envían el pedido que necesitan.",
   },
   {
-    n: "3",
-    title: "Comparte tu QR",
-    text: "Tus clientes piden desde el celular y tú ves cada pedido en el panel, con su estado.",
+    role: "03 · SIGUE",
+    title: "Coordina el servicio",
+    text: "El pedido llega al panel y el equipo actualiza su avance hasta completarlo.",
   },
 ] as const;
 
 export function HowItWorks() {
   return (
-    <section id="como-funciona" className="bg-coral py-[var(--section-y)] text-tinta" aria-labelledby="como-titulo">
+    <section id="como-funciona" className="bg-petroleo py-[var(--section-y)] text-blanco" aria-labelledby="como-titulo">
       <div className="container-sb">
-        <h2 id="como-titulo" className="max-w-3xl text-[clamp(2.2rem,5vw,4.4rem)]">
-          <span className="h-display">Del menú al primer pedido</span>
-          <span className="relative ml-3 inline-block">
-            <span className="h-script text-[1.2em]">en tres pasos</span>
-            <BrushUnderline className="absolute -bottom-2 left-0 h-3 w-full" fill="var(--color-petroleo)" />
-          </span>
-        </h2>
+        <div className="grid gap-5 lg:grid-cols-12 lg:items-end">
+          <div className="lg:col-span-8">
+            <p className="eyebrow text-coral-claro">Cómo funciona</p>
+            <h2 id="como-titulo" className="mt-3 text-[clamp(2rem,4.2vw,3.5rem)] font-extrabold leading-tight tracking-[-0.04em]">
+              De tu menú al servicio, en tres pasos.
+            </h2>
+          </div>
+          <p className="max-w-lg leading-relaxed text-blanco/80 lg:col-span-4">
+            Una herramienta para que el cliente pida con claridad y el equipo atienda con orden.
+          </p>
+        </div>
 
-        <ol className="mt-14 grid gap-10 md:grid-cols-3">
-          {STEPS.map((s, i) => (
-            <li
-              key={s.n}
-              className={`relative border-t-[3px] border-tinta pt-5 ${
-                i === 1 ? "md:mt-10" : i === 2 ? "md:mt-20" : ""
-              }`}
-            >
-              <span aria-hidden="true" className="h-script block text-[7rem] leading-[0.8] text-tinta">
-                {s.n}
-              </span>
-              <h3 className="mt-3 text-2xl font-extrabold">{s.title}</h3>
-              <p className="mt-2 max-w-sm font-bold">{s.text}</p>
+        <ol className="mt-9 grid gap-3 sm:grid-cols-2 lg:mt-12 lg:grid-cols-3">
+          {FLOW.map((step) => (
+            <li key={step.role} className="flex min-h-56 flex-col rounded-xl border border-blanco/15 bg-white/5 p-5 sm:p-6">
+              <p className="text-xs font-extrabold tracking-[0.12em] text-coral-claro">{step.role}</p>
+              <h3 className="mt-5 text-xl font-extrabold leading-snug sm:text-2xl">{step.title}</h3>
+              <p className="mt-3 leading-relaxed text-blanco/80">{step.text}</p>
             </li>
           ))}
         </ol>

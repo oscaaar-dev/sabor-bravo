@@ -38,24 +38,24 @@ export function Nav() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 border-b-[3px] transition-colors duration-200 ${
+      className={`fixed inset-x-0 top-0 z-50 border-b transition-colors duration-200 ${
         solid
-          ? "border-tinta bg-blanco"
-          : "border-tinta bg-blanco wide:border-transparent wide:bg-transparent"
+          ? "border-tinta/10 bg-papel/95 backdrop-blur-md"
+          : "border-transparent bg-papel wide:bg-transparent"
       }`}
     >
       <div className="container-sb flex h-[var(--nav-h)] items-center justify-between gap-4">
         <Link
           href="/"
           aria-label="Sabor Bravo, ir al inicio"
-          className={`shrink-0 ${scrolled ? "" : "wide:invisible"}`}
+          className={`shrink-0 ${solid ? "" : "wide:invisible"}`}
         >
           <Image
             src="/images/brands/sabor-bravo-compacto.png"
             alt="Sabor Bravo"
             width={190}
             height={90}
-            className="h-11 w-auto"
+            className="h-10 w-auto"
             priority
           />
         </Link>
@@ -65,7 +65,7 @@ export function Nav() {
             <a
               key={l.href}
               href={l.href}
-              className="text-[0.72rem] font-extrabold uppercase tracking-wide text-tinta xl:text-[0.8rem] decoration-coral decoration-[3px] underline-offset-[10px] hover:underline"
+              className="text-xs font-bold text-tinta-suave transition-colors hover:text-petroleo xl:text-sm"
             >
               {l.short ? (
                 <>
@@ -80,10 +80,10 @@ export function Nav() {
         </nav>
 
         <div className="hidden items-center gap-3 whitespace-nowrap lg:flex">
-          <Link href={LOGIN_HREF} className="btn-brutal btn-blanco btn-sm">
+          <Link href={LOGIN_HREF} className="site-btn site-btn-secondary !min-h-10 !px-4 !text-sm">
             Iniciar sesión
           </Link>
-          <Link href={SIGNUP_HREF} className="btn-brutal btn-coral btn-sm">
+          <Link href={SIGNUP_HREF} className="site-btn site-btn-primary !min-h-10 !px-4 !text-sm">
             Crear cuenta
           </Link>
         </div>
@@ -91,7 +91,7 @@ export function Nav() {
         <button
           ref={toggleRef}
           type="button"
-          className="btn-brutal btn-blanco btn-sm lg:hidden"
+          className="site-btn site-btn-secondary !min-h-10 !px-4 !text-sm lg:hidden"
           aria-expanded={open}
           aria-controls="menu-movil"
           onClick={() => setOpen((v) => !v)}
@@ -101,23 +101,23 @@ export function Nav() {
       </div>
 
       {open ? (
-        <div id="menu-movil" className="border-t-[3px] border-tinta bg-blanco lg:hidden">
+        <div id="menu-movil" className="border-t border-tinta/10 bg-papel lg:hidden">
           <nav aria-label="Principal móvil" className="container-sb flex flex-col py-3">
             {NAV_LINKS.map((l) => (
               <a
                 key={l.href}
                 href={l.href}
                 onClick={() => setOpen(false)}
-                className="border-b-2 border-tinta/15 py-4 text-lg font-extrabold uppercase tracking-wide"
+                className="border-b border-tinta/10 py-4 text-base font-bold"
               >
                 {l.label}
               </a>
             ))}
             <div className="flex flex-col gap-3 py-5">
-              <Link href={LOGIN_HREF} className="btn-brutal btn-blanco">
+              <Link href={LOGIN_HREF} className="site-btn site-btn-secondary">
                 Iniciar sesión
               </Link>
-              <Link href={SIGNUP_HREF} className="btn-brutal btn-coral">
+              <Link href={SIGNUP_HREF} className="site-btn site-btn-primary">
                 Crear cuenta
               </Link>
             </div>

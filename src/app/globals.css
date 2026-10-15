@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 /*
- * SABOR BRAVO — tokens de diseño
- * Neobrutalismo gastronómico editorial: bordes tinta visibles, sombras duras
- * sin desenfoque, bloques de color y trazos de pincel.
+ * SABOR BRAVO — tokens de marca compartidos.
+ * La portada pública usa una presentación editorial despejada; el panel conserva
+ * sus componentes de alto contraste y bordes visibles para facilitar la operación.
  */
 @theme {
   /* Paleta oficial: azul petróleo, blanco cálido, coral y tinta (texto oscuro) */
@@ -136,6 +136,42 @@ body {
     font-size: 0.75rem;
     letter-spacing: 0.14em;
     text-transform: uppercase;
+  }
+
+  /* Botones ligeros de la portada pública: mantienen la paleta sin sumar contornos pesados. */
+  .site-btn {
+    display: inline-flex;
+    min-height: 3rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    border: 1px solid transparent;
+    border-radius: 0.65rem;
+    padding: 0.75rem 1.1rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1.2;
+    transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease;
+    cursor: pointer;
+  }
+  .site-btn-primary {
+    border-color: var(--color-coral);
+    background: var(--color-coral);
+    color: var(--color-tinta);
+  }
+  .site-btn-primary:hover {
+    border-color: var(--color-coral-oscuro);
+    background: var(--color-coral-oscuro);
+  }
+  .site-btn-secondary {
+    border-color: color-mix(in srgb, var(--color-tinta) 15%, transparent);
+    background: var(--color-blanco);
+    color: var(--color-tinta);
+  }
+  .site-btn-secondary:hover {
+    border-color: color-mix(in srgb, var(--color-petroleo) 35%, transparent);
+    background: color-mix(in srgb, var(--color-petroleo) 5%, white);
+    color: var(--color-petroleo);
   }
 
   /* Botones brutalistas: borde tinta, sombra dura, se hunden al presionar */

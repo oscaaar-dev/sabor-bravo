@@ -1,55 +1,38 @@
-const ROWS = [
-  {
-    hoy: "Una carta en PDF que pesa, se ve diminuta en el celular y nadie termina de leer.",
-    con: "Una carta que carga rápido, con fotos, precios y categorías pensadas para el pulgar.",
-  },
-  {
-    hoy: "Precios que cambian en la cocina pero no en la carta impresa.",
-    con: "Cambias un precio o pausas un plato agotado desde el panel, sin llamar a nadie.",
-  },
-  {
-    hoy: "Pedidos que llegan por chats distintos y se pierden entre mensajes.",
-    con: "Cada pedido en un solo lugar, con su detalle y su estado: de pendiente a completado.",
-  },
+const ORDER_STEPS = [
+  { number: "01", label: "Entra con contexto", detail: "Cada pedido llega con su modalidad: mesa, recojo o delivery." },
+  { number: "02", label: "La cocina lo mueve", detail: "El equipo revisa el detalle y actualiza el avance desde el panel." },
+  { number: "03", label: "Todos saben qué sigue", detail: "Salón y cocina ven el mismo estado hasta completar la entrega." },
 ] as const;
 
 export function Problem() {
   return (
-    <section className="bg-blanco py-[var(--section-y)]" aria-labelledby="problema-titulo">
-      <div className="container-sb grid gap-12 lg:grid-cols-12 lg:gap-8">
-        <div className="lg:col-span-5">
-          <p className="eyebrow text-petroleo">El problema de casi toda carta</p>
-          <h2
-            id="problema-titulo"
-            className="mt-4 text-[clamp(2.2rem,5.2vw,4.6rem)]"
-          >
-            <span className="h-display block">Tus platos</span>
-            <span className="h-display block">merecen</span>
-            <span className="h-script block -rotate-2 text-[1.3em] text-petroleo">más que un PDF</span>
+    <section className="bg-papel py-[var(--section-y)]" aria-labelledby="problema-titulo">
+      <div className="container-sb">
+        <div className="max-w-3xl">
+          <p className="eyebrow text-petroleo">Del salón a la cocina</p>
+          <h2 id="problema-titulo" className="mt-3 text-[clamp(2rem,4.2vw,3.5rem)] font-extrabold leading-tight tracking-[-0.04em]">
+            Cada pedido encuentra su siguiente paso.
           </h2>
+          <p className="mt-4 max-w-2xl text-lg leading-relaxed text-tinta-suave">
+            La modalidad y el estado acompañan el pedido desde que llega hasta que se entrega.
+          </p>
         </div>
 
-        <ul className="lg:col-span-7">
-          {ROWS.map((row, i) => (
-            <li
-              key={row.hoy}
-              className={`grid gap-4 border-t-[3px] border-tinta py-7 sm:grid-cols-2 sm:gap-8 ${
-                i === ROWS.length - 1 ? "border-b-[3px]" : ""
-              }`}
-            >
-              <div>
-                <p className="eyebrow text-tinta-suave">Hoy</p>
-                <p className="mt-2 text-tinta-suave line-through decoration-coral decoration-[3px]">
-                  {row.hoy}
-                </p>
-              </div>
-              <div>
-                <p className="eyebrow text-petroleo">Con Sabor Bravo</p>
-                <p className="mt-2 font-bold">{row.con}</p>
+        <ol className="mt-10 grid gap-4 md:mt-12 md:grid-cols-3">
+          {ORDER_STEPS.map((step) => (
+            <li key={step.number} className="rounded-xl border border-tinta/10 bg-arena/70 p-5 sm:p-6">
+              <div className="flex items-start gap-4">
+                <span aria-hidden="true" className="grid size-9 shrink-0 place-items-center rounded-full bg-petroleo text-sm font-extrabold text-blanco">
+                  {step.number}
+                </span>
+                <div>
+                  <h3 className="font-extrabold leading-snug">{step.label}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-tinta-suave">{step.detail}</p>
+                </div>
               </div>
             </li>
           ))}
-        </ul>
+        </ol>
       </div>
     </section>
   );

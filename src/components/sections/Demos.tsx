@@ -7,67 +7,72 @@ interface Demo {
   readonly nombre: string;
   readonly especialidad: string;
   readonly dish: DishSlug;
-  readonly surface: string;
-  readonly offset: string;
 }
 
 /** Restaurantes de demostración: nombres de ejemplo, NO son negocios reales. */
 const DEMOS: readonly Demo[] = [
-  { slug: "la-mar-cevicheria", nombre: "La Mar Cevichería", especialidad: "Cevichería", dish: "ceviche", surface: "bg-arena text-tinta", offset: "" },
-  { slug: "el-gallo-bravo", nombre: "El Gallo Bravo", especialidad: "Pollería", dish: "pollo-brasa", surface: "bg-coral text-tinta", offset: "lg:mt-14" },
-  { slug: "cafe-del-valle", nombre: "Café del Valle", especialidad: "Cafetería", dish: "cafe", surface: "bg-petroleo text-blanco", offset: "lg:mt-4" },
-  { slug: "sabor-criollo", nombre: "Sabor Criollo", especialidad: "Comida criolla", dish: "lomo-saltado", surface: "bg-coral-claro text-tinta", offset: "lg:mt-20" },
+  { slug: "la-mar-cevicheria", nombre: "La Mar Cevichería", especialidad: "Cevichería", dish: "ceviche" },
+  { slug: "el-gallo-bravo", nombre: "El Gallo Bravo", especialidad: "Pollería", dish: "pollo-brasa" },
+  { slug: "cafe-del-valle", nombre: "Café del Valle", especialidad: "Cafetería", dish: "cafe" },
+  { slug: "sabor-criollo", nombre: "Sabor Criollo", especialidad: "Comida criolla", dish: "lomo-saltado" },
 ];
 
-const OTRAS = ["Chifas", "Pizzerías y pastas", "Hamburgueserías", "Juguerías", "Pastelerías"] as const;
+const OTRAS = ["chifas", "pizzerías", "hamburgueserías", "juguerías", "pastelerías"] as const;
 
 export function Demos() {
   return (
-    <section id="demos" className="bg-blanco py-[var(--section-y)]" aria-labelledby="demos-titulo">
+    <section id="demos" className="bg-papel py-[var(--section-y)]" aria-labelledby="demos-titulo">
       <div className="container-sb">
         <div className="max-w-3xl">
           <p className="eyebrow text-petroleo">Restaurantes de demostración</p>
-          <h2 id="demos-titulo" className="mt-4 text-[clamp(2.2rem,5vw,4.4rem)]">
-            <span className="h-display">Una plataforma.</span>{" "}
-            <span className="h-script text-[1.2em] text-petroleo">Todas las cocinas.</span>
+          <h2 id="demos-titulo" className="mt-3 text-[clamp(2rem,4.2vw,3.5rem)] font-extrabold leading-tight tracking-[-0.04em]">
+            Mira cómo se adapta a cada negocio.
           </h2>
-          <p className="mt-5 max-w-xl">
-            Cada negocio arma su carta con sus propias categorías, variantes y colores. Estos
-            nombres son ejemplos de demostración, no negocios reales.
+          <p className="mt-4 max-w-2xl leading-relaxed text-tinta-suave">
+            Explora menús de ejemplo con distintos productos y categorías. Son demostraciones, no negocios reales.
           </p>
         </div>
 
-        <ul className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {DEMOS.map((d, i) => (
-            <li key={d.slug} className={d.offset}>
+        <ul className="mt-9 grid gap-4 sm:grid-cols-2 lg:mt-12 lg:grid-cols-4">
+          {DEMOS.map((demo) => (
+            <li key={demo.slug}>
               <Link
-                href={`/r/${d.slug}`}
-                className={`group block border-[3px] border-tinta p-4 shadow-brutal transition-transform hover:-translate-y-1 ${d.surface} ${
-                  i % 2 === 0 ? "-rotate-1" : "rotate-1"
-                }`}
+                href={`/r/${demo.slug}`}
+                className="group block h-full overflow-hidden rounded-2xl border border-petroleo/10 bg-blanco shadow-[0_6px_18px_rgba(32,35,33,0.05)] transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-1 hover:border-petroleo/20 hover:shadow-[0_16px_32px_rgba(32,35,33,0.12)]"
               >
-                <div className="relative mx-auto aspect-square w-full">
-                  <DishPhoto slug={d.dish} sizes="(min-width:1024px) 22vw, (min-width:640px) 44vw, 90vw" />
+                <div className="relative aspect-[4/3] overflow-hidden bg-arena">
+                  <DishPhoto
+                    slug={demo.dish}
+                    sizes="(min-width:1024px) 22vw, (min-width:640px) 44vw, 90vw"
+                    shape="tile"
+                    className="transition-transform duration-300 group-hover:scale-[1.035]"
+                  />
+                  <div className="absolute inset-x-0 top-0 flex items-start justify-between p-3 sm:p-4">
+                    <span className="rounded-full border border-blanco/80 bg-blanco/95 px-3 py-1 text-[0.58rem] font-extrabold uppercase tracking-[0.1em] text-petroleo shadow-sm">
+                      Menú demo
+                    </span>
+                    <span aria-hidden="true" className="grid size-8 place-items-center rounded-full bg-coral text-base font-extrabold text-tinta shadow-sm transition-transform group-hover:rotate-45">
+                      ↗
+                    </span>
+                  </div>
                 </div>
-                <p className="h-script mt-3 text-3xl leading-none">{d.nombre}</p>
-                <p className="mt-2 flex items-center justify-between gap-2">
-                  <span className="sticker !bg-blanco !text-tinta">{d.especialidad}</span>
-                  <span className="text-sm font-extrabold underline decoration-[3px] underline-offset-4 group-hover:decoration-coral">
-                    Ver demo
+                <div className="p-4 sm:p-5">
+                  <p className="text-[0.65rem] font-extrabold uppercase tracking-[0.12em] text-petroleo">{demo.especialidad}</p>
+                  <div className="mt-2 flex items-center justify-between gap-3">
+                    <h3 className="font-extrabold leading-snug">{demo.nombre}</h3>
+                  </div>
+                  <span className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-petroleo">
+                    Explorar menú <span aria-hidden="true" className="transition-transform group-hover:translate-x-1">→</span>
                   </span>
-                </p>
+                  <span className="sr-only">Ver menú de demostración</span>
+                </div>
               </Link>
             </li>
           ))}
         </ul>
 
-        <p className="mt-16 flex flex-wrap items-center gap-x-3 gap-y-2 font-bold">
-          <span className="eyebrow">También para</span>
-          {OTRAS.map((o) => (
-            <span key={o} className="border-b-[3px] border-coral">
-              {o}
-            </span>
-          ))}
+        <p className="mt-8 text-sm leading-relaxed text-tinta-suave">
+          También funciona para {OTRAS.join(", ")} y otros negocios gastronómicos.
         </p>
       </div>
     </section>
