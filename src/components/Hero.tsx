@@ -1,12 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Bodoni_Moda } from "next/font/google";
+import { Montserrat } from "next/font/google";
 import { SIGNUP_HREF } from "@/content/nav";
 import { DishPhoto } from "@/components/DishPhoto";
 import { TornEdge } from "@/components/graphics";
 
-const heroSerif = Bodoni_Moda({
-  weight: "700",
+const heroFont = Montserrat({
+  weight: "900",
+  style: "italic",
   subsets: ["latin"],
   display: "swap",
 });
@@ -38,11 +39,29 @@ export function Hero() {
 
       <div className="container-sb relative z-10 mx-auto grid min-h-[100svh] max-w-[120rem] items-center gap-10 pb-20 pt-[calc(var(--nav-h)+2rem)] sm:gap-12 xl:grid-cols-12 xl:items-start xl:gap-8 xl:pb-16 xl:pt-[clamp(10.5rem,24vh,12.25rem)]">
         <div className="xl:col-span-7">
-          <h1 id="hero-titulo" className={`${heroSerif.className} max-w-[40rem] text-[clamp(2.15rem,8.2vw,3rem)] font-bold leading-[1.02] tracking-[-0.035em] sm:text-[clamp(2.6rem,5vw,3.6rem)] xl:text-[clamp(2.65rem,3.6vw,3.6rem)]`}>
-            <span className="xl:block">Tu restaurante evoluciona</span>{" "}
-            <span className="xl:block">con un <span className="text-petroleo">menú QR</span></span>{" "}
-            <span className="block text-petroleo">inteligente.</span>
-          </h1>
+          <div className="relative max-w-[38rem] pb-3 pl-3 pt-5 sm:pl-4 sm:pt-7">
+            <h1
+              id="hero-titulo"
+              className={`${heroFont.className} relative w-fit origin-bottom-left -rotate-[3deg] text-[clamp(1.65rem,8.8vw,3.25rem)] leading-[0.98] tracking-[-0.05em] sm:-rotate-[4deg] sm:text-[clamp(3.25rem,6.6vw,4.25rem)] xl:text-[clamp(3rem,4.2vw,4.5rem)]`}
+            >
+              <span className="block whitespace-nowrap">Tu restaurante</span>{" "}
+              <span className="block whitespace-nowrap">evoluciona</span>{" "}
+              <span className="block whitespace-nowrap">
+                con un <span className="relative inline-block text-petroleo">
+                  menú QR
+                  <svg aria-hidden="true" viewBox="0 0 200 10" preserveAspectRatio="none" className="pointer-events-none absolute inset-x-0 -bottom-[0.07em] h-[0.12em] w-full fill-petroleo/45">
+                    <path d="M1 6 Q85 0 199 3 L196 6 Q92 5 2 10Z" />
+                  </svg>
+                </span>
+              </span>{" "}
+              <span className="relative block w-fit whitespace-nowrap text-petroleo">
+                inteligente.
+                <svg aria-hidden="true" viewBox="0 0 160 16" preserveAspectRatio="none" className="pointer-events-none absolute -bottom-[0.18em] right-[0.08em] h-[0.2em] w-[43%] fill-coral">
+                  <path d="M1 7 Q70 1 159 2 L157 6 Q77 7 7 11Z M26 13 Q73 8 121 10 L118 13 Q71 12 26 16Z" />
+                </svg>
+              </span>
+            </h1>
+          </div>
 
           <p className="mt-5 max-w-[42rem] font-sans text-base leading-relaxed text-tinta-suave sm:text-lg">
             Unifica tus flujos de salón, recojo y delivery. Tu menú siempre actualizado y pedidos
@@ -93,13 +112,13 @@ export function Hero() {
             <div className="relative size-14"><DishPhoto slug="lomo-saltado" sizes="56px" /></div>
           </div>
 
-          <div className="absolute -left-[8.5rem] top-[25%] z-20 hidden size-28 xl:block">
+          <div className="absolute -left-[8.5rem] top-12 z-20 hidden size-28 xl:block">
             <DishPhoto slug="pollo-brasa" sizes="112px" className="drop-shadow-[0_10px_18px_rgba(32,35,33,0.18)]" />
           </div>
           <div className="absolute -top-16 right-[20%] z-20 hidden size-26 xl:block">
             <DishPhoto slug="ceviche" sizes="104px" className="drop-shadow-[0_10px_18px_rgba(32,35,33,0.18)]" />
           </div>
-          <div className="absolute bottom-[4%] -left-[7rem] z-20 hidden size-20 xl:block">
+          <div className="absolute -left-[7rem] top-44 z-20 hidden size-20 xl:block">
             <DishPhoto slug="lomo-saltado" sizes="80px" className="drop-shadow-[0_10px_18px_rgba(32,35,33,0.18)]" />
           </div>
 
