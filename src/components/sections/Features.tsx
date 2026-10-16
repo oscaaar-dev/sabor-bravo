@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 type PreviewKind = "qr" | "catalog" | "orders" | "service" | "promo" | "reports" | "team";
 
 const FEATURES: readonly {
@@ -36,142 +38,66 @@ const FEATURES: readonly {
     preview: "reports",
   },
   {
-    title: "Equipo y sucursales",
+    title: "Equipo y permisos",
     text: "Asigna roles y permisos para que cada persona acceda a lo que necesita.",
     preview: "team",
   },
 ];
 
+const PREVIEWS: Record<PreviewKind, { src: string; alt: string }> = {
+  qr: {
+    src: "/images/features/qr-real.webp",
+    alt: "Pantalla real de Sabor Bravo con el código QR y la dirección pública de una carta",
+  },
+  catalog: {
+    src: "/images/features/catalog-real.webp",
+    alt: "Pantalla real del catálogo con platos, precios, promoción y disponibilidad",
+  },
+  orders: {
+    src: "/images/features/cart-real.webp",
+    alt: "Carrito real de la carta móvil con un producto y su precio vigente",
+  },
+  service: {
+    src: "/images/features/service-real.webp",
+    alt: "Panel real de pedidos con filtros, importes y estados del servicio",
+  },
+  promo: {
+    src: "/images/features/promo-real.webp",
+    alt: "Producto real con precio anterior tachado, precio promocional y descuento del cincuenta por ciento",
+  },
+  reports: {
+    src: "/images/features/reports-real.webp",
+    alt: "Informe real con ventas, pedidos completados, ticket promedio y filtros de fecha",
+  },
+  team: {
+    src: "/images/features/team-real.webp",
+    alt: "Panel real del equipo con cuentas de propietario y personal y controles de permisos",
+  },
+};
+
 function FeaturePreview({ kind }: { kind: PreviewKind }) {
-  const frame = "mt-auto rounded-xl border border-petroleo/10 bg-papel/80 p-3";
-  const label = "text-[0.58rem] font-extrabold uppercase tracking-[0.12em] text-tinta-suave";
-  const chip = "rounded-full border border-petroleo/10 bg-blanco px-2.5 py-1 text-[0.62rem] font-bold text-petroleo";
+  const preview = PREVIEWS[kind];
 
-  switch (kind) {
-    case "qr":
-      return (
-        <div aria-hidden="true" className={frame}>
-          <div className="flex items-center gap-3">
-            <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-petroleo text-xs font-extrabold tracking-wide text-blanco">QR</span>
-            <div className="min-w-0 flex-1">
-              <p className={label}>Tu carta digital</p>
-              <p className="mt-0.5 text-xs font-bold">Lista para compartir</p>
-            </div>
-            <span className="grid size-8 shrink-0 place-items-center rounded-full bg-coral/25 text-sm font-extrabold text-tinta">↗</span>
-          </div>
-        </div>
-      );
-
-    case "catalog":
-      return (
-        <div aria-hidden="true" className={frame}>
-          <div className="flex flex-wrap gap-1.5">
-            <span className="rounded-full bg-petroleo px-2.5 py-1 text-[0.62rem] font-bold text-blanco">Entradas</span>
-            <span className={chip}>Fondos</span>
-            <span className={chip}>Bebidas</span>
-          </div>
-          <div className="mt-2.5 grid grid-cols-2 gap-2">
-            <div className="flex items-center gap-2 rounded-lg border border-tinta/5 bg-blanco p-2">
-              <span className="size-7 shrink-0 rounded-md bg-coral/25" />
-              <span className="text-[0.62rem] font-bold leading-tight">Ceviche<br />clásico</span>
-            </div>
-            <div className="flex items-center gap-2 rounded-lg border border-tinta/5 bg-blanco p-2">
-              <span className="size-7 shrink-0 rounded-md bg-petroleo/15" />
-              <span className="text-[0.62rem] font-bold leading-tight">Pollo a<br />la brasa</span>
-            </div>
-          </div>
-        </div>
-      );
-
-    case "orders":
-      return (
-        <div aria-hidden="true" className={frame}>
-          <p className={label}>Modalidad del pedido</p>
-          <div className="mt-2 flex flex-wrap gap-1.5">
-            <span className="rounded-lg bg-petroleo px-2.5 py-1.5 text-[0.62rem] font-bold text-blanco">Mesa</span>
-            <span className={chip}>Recojo</span>
-            <span className={chip}>Delivery</span>
-          </div>
-          <div className="mt-2.5 flex items-center justify-between rounded-lg border border-tinta/5 bg-blanco px-2.5 py-2">
-            <span className="text-[0.65rem] font-semibold">Pedido #124 · 2 platos</span>
-            <span className="text-[0.62rem] font-extrabold text-petroleo">Total calculado</span>
-          </div>
-        </div>
-      );
-
-    case "service":
-      return (
-        <div aria-hidden="true" className={frame}>
-          <div className="flex items-center justify-between gap-2">
-            <div>
-              <p className={label}>Pedido #124</p>
-              <p className="mt-0.5 text-xs font-bold">Mesa 06 · 2 platos</p>
-            </div>
-            <span className="rounded-full bg-coral/25 px-2.5 py-1 text-[0.6rem] font-extrabold text-tinta">En cocina</span>
-          </div>
-          <div className="mt-3 flex items-center gap-1.5">
-            <span className="h-1.5 flex-1 rounded-full bg-petroleo" />
-            <span className="h-1.5 flex-1 rounded-full bg-coral" />
-            <span className="h-1.5 flex-1 rounded-full bg-tinta/10" />
-            <span className="ml-1 text-[0.58rem] font-semibold text-tinta-suave">Listo</span>
-          </div>
-        </div>
-      );
-
-    case "promo":
-      return (
-        <div aria-hidden="true" className={frame}>
-          <div className="flex items-center gap-2.5">
-            <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-coral/25 text-base">✦</span>
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-xs font-extrabold">Pollo a la brasa</p>
-              <p className="mt-0.5 text-[0.62rem] text-tinta-suave">Promoción del día</p>
-            </div>
-            <span className="rounded-full bg-petroleo/10 px-2 py-1 text-[0.58rem] font-extrabold text-petroleo">Activa</span>
-          </div>
-        </div>
-      );
-
-    case "reports":
-      return (
-        <div aria-hidden="true" className={frame}>
-          <div className="flex items-center justify-between">
-            <p className={label}>Resumen de ventas</p>
-            <span className="rounded-full bg-blanco px-2 py-0.5 text-[0.58rem] font-bold text-tinta-suave">Semana</span>
-          </div>
-          <div className="mt-2 flex h-11 items-end gap-1.5 rounded-lg border border-tinta/5 bg-blanco px-3 pt-2">
-            {[38, 55, 44, 76, 61, 88, 69].map((height, index) => (
-              <span
-                key={index}
-                className={`flex-1 rounded-t-sm ${index === 5 ? "bg-coral" : "bg-petroleo/55"}`}
-                style={{ height: `${height}%` }}
-              />
-            ))}
-          </div>
-        </div>
-      );
-
-    case "team":
-      return (
-        <div aria-hidden="true" className={frame}>
-          <div className="flex items-center gap-2">
-            {[
-              ["A", "bg-petroleo text-blanco"],
-              ["S", "bg-coral text-tinta"],
-              ["C", "bg-arena text-tinta"],
-            ].map(([initial, tone]) => (
-              <span key={initial} className={`grid size-8 place-items-center rounded-full text-[0.62rem] font-extrabold ring-2 ring-papel ${tone}`}>
-                {initial}
-              </span>
-            ))}
-            <div className="ml-1 min-w-0">
-              <p className="text-xs font-extrabold">Accesos del equipo</p>
-              <p className="text-[0.62rem] text-tinta-suave">Permisos según cada rol</p>
-            </div>
-          </div>
-        </div>
-      );
-  }
+  return (
+    <figure className="mt-auto overflow-hidden rounded-xl border border-petroleo/15 bg-blanco shadow-[0_5px_14px_rgba(32,35,33,0.08)]">
+      <div className="flex h-7 items-center gap-1.5 border-b border-petroleo/10 bg-papel px-3">
+        <span aria-hidden="true" className="size-1.5 rounded-full bg-coral" />
+        <span aria-hidden="true" className="size-1.5 rounded-full bg-mostaza" />
+        <span aria-hidden="true" className="size-1.5 rounded-full bg-petroleo/55" />
+        <figcaption className="ml-auto text-[0.58rem] font-extrabold uppercase tracking-[0.12em] text-tinta-suave">
+          Pantalla real
+        </figcaption>
+      </div>
+      <Image
+        src={preview.src}
+        alt={preview.alt}
+        width={960}
+        height={360}
+        sizes="(min-width: 1024px) 29vw, (min-width: 640px) 46vw, 88vw"
+        className="h-auto w-full"
+      />
+    </figure>
+  );
 }
 
 export function Features() {
