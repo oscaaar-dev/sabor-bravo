@@ -22,7 +22,7 @@ const OTRAS = ["chifas", "pizzerías", "hamburgueserías", "juguerías", "pastel
 
 export function Demos() {
   return (
-    <section id="demos" className="bg-papel py-[var(--section-y)]" aria-labelledby="demos-titulo">
+    <section id="demos" className="bg-papel pb-[var(--section-y)]" aria-labelledby="demos-titulo">
       <div className="container-sb">
         <div className="max-w-3xl">
           <p className="eyebrow text-petroleo">Restaurantes de demostración</p>
