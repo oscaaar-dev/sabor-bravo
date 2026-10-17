@@ -34,14 +34,14 @@ export function Demos() {
           </p>
         </div>
 
-        <ul className="mt-9 grid max-w-6xl gap-4 sm:grid-cols-2 lg:mt-12 lg:grid-cols-4">
+        <ul className="mt-9 grid max-w-4xl gap-4 sm:grid-cols-2 lg:mt-10 lg:grid-cols-4">
           {DEMOS.map((demo) => (
             <li key={demo.slug}>
               <Link
                 href={`/r/${demo.slug}`}
                 className="group block h-full overflow-hidden rounded-2xl border border-petroleo/10 bg-blanco shadow-[0_6px_18px_rgba(32,35,33,0.05)] transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-1 hover:border-petroleo/20 hover:shadow-[0_16px_32px_rgba(32,35,33,0.12)]"
               >
-                <div className="relative h-56 overflow-hidden bg-[radial-gradient(circle_at_50%_30%,#fff9ed_0%,#f1dfbb_100%)] p-3 sm:h-64 sm:p-4 lg:h-56">
+                <div className="relative h-60 overflow-hidden bg-[radial-gradient(circle_at_50%_30%,#fff9ed_0%,#f1dfbb_100%)] p-3 sm:h-56 sm:p-3.5 lg:h-52">
                   <DishPhoto
                     slug={demo.dish}
                     imageFile={demo.mockupFile}
@@ -52,18 +52,18 @@ export function Demos() {
                     className="transition-transform duration-300 group-hover:scale-[1.02]"
                   />
                 </div>
-                <div className="p-4 sm:p-5">
+                <div className="p-3.5 sm:p-4">
                   <div className="flex items-center justify-between gap-3">
                     <span className="rounded-full bg-petroleo/10 px-2.5 py-1 text-[0.58rem] font-extrabold uppercase tracking-[0.1em] text-petroleo">Menú demo</span>
                     <span aria-hidden="true" className="grid size-8 shrink-0 place-items-center rounded-full bg-coral text-base font-extrabold text-tinta shadow-sm transition-transform group-hover:rotate-45">
                       ↗
                     </span>
                   </div>
-                  <p className="mt-4 text-[0.65rem] font-extrabold uppercase tracking-[0.12em] text-petroleo">{demo.especialidad}</p>
+                  <p className="mt-3 text-[0.62rem] font-extrabold uppercase tracking-[0.12em] text-petroleo">{demo.especialidad}</p>
                   <div className="mt-2 flex items-center justify-between gap-3">
                     <h3 className="font-extrabold leading-snug">{demo.nombre}</h3>
                   </div>
-                  <span className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-petroleo">
+                  <span className="mt-3 inline-flex items-center gap-2 text-sm font-bold text-petroleo">
                     Explorar menú <span aria-hidden="true" className="transition-transform group-hover:translate-x-1">→</span>
                   </span>
                   <span className="sr-only">Ver menú de demostración</span>
