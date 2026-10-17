@@ -7,14 +7,15 @@ interface Demo {
   readonly nombre: string;
   readonly especialidad: string;
   readonly dish: DishSlug;
+  readonly mockupFile: string;
 }
 
 /** Restaurantes de demostración: nombres de ejemplo, NO son negocios reales. */
 const DEMOS: readonly Demo[] = [
-  { slug: "la-mar-cevicheria", nombre: "La Mar Cevichería", especialidad: "Cevichería", dish: "ceviche" },
-  { slug: "el-gallo-bravo", nombre: "El Gallo Bravo", especialidad: "Pollería", dish: "pollo-brasa" },
-  { slug: "cafe-del-valle", nombre: "Café del Valle", especialidad: "Cafetería", dish: "cafe" },
-  { slug: "sabor-criollo", nombre: "Sabor Criollo", especialidad: "Comida criolla", dish: "lomo-saltado" },
+  { slug: "la-mar-cevicheria", nombre: "La Mar Cevichería", especialidad: "Cevichería", dish: "ceviche", mockupFile: "/images/dishes/ceviche-framed.png" },
+  { slug: "el-gallo-bravo", nombre: "El Gallo Bravo", especialidad: "Pollería", dish: "pollo-brasa", mockupFile: "/images/dishes/pollo-brasa-framed.png" },
+  { slug: "cafe-del-valle", nombre: "Café del Valle", especialidad: "Cafetería", dish: "cafe", mockupFile: "/images/dishes/cafe-framed.png" },
+  { slug: "sabor-criollo", nombre: "Sabor Criollo", especialidad: "Comida criolla", dish: "lomo-saltado", mockupFile: "/images/dishes/lomo-saltado-framed.png" },
 ];
 
 const OTRAS = ["chifas", "pizzerías", "hamburgueserías", "juguerías", "pastelerías"] as const;
@@ -33,20 +34,21 @@ export function Demos() {
           </p>
         </div>
 
-        <ul className="mt-9 grid gap-4 sm:grid-cols-2 lg:mt-12 lg:grid-cols-4">
+        <ul className="mt-9 grid max-w-6xl gap-4 sm:grid-cols-2 lg:mt-12 lg:grid-cols-4">
           {DEMOS.map((demo) => (
             <li key={demo.slug}>
               <Link
                 href={`/r/${demo.slug}`}
                 className="group block h-full overflow-hidden rounded-2xl border border-petroleo/10 bg-blanco shadow-[0_6px_18px_rgba(32,35,33,0.05)] transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-1 hover:border-petroleo/20 hover:shadow-[0_16px_32px_rgba(32,35,33,0.12)]"
               >
-                <div className="relative aspect-square overflow-hidden bg-[radial-gradient(circle_at_50%_30%,#fff9ed_0%,#f1dfbb_100%)] p-2.5 sm:p-3">
+                <div className="relative h-56 overflow-hidden bg-[radial-gradient(circle_at_50%_30%,#fff9ed_0%,#f1dfbb_100%)] p-3 sm:h-64 sm:p-4 lg:h-56">
                   <DishPhoto
                     slug={demo.dish}
-                    sizes="(min-width:1024px) 22vw, (min-width:640px) 44vw, 90vw"
+                    imageFile={demo.mockupFile}
+                    sizes="(min-width:1024px) 18rem, (min-width:640px) 44vw, 90vw"
                     shape="tile"
                     fit="contain"
-                    surfaceClassName="rounded-xl bg-blanco"
+                    surfaceClassName="rounded-xl bg-blanco/55"
                     className="transition-transform duration-300 group-hover:scale-[1.02]"
                   />
                 </div>

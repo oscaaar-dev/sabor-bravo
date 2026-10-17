@@ -14,6 +14,8 @@ interface DishPhotoProps {
   fit?: "cover" | "contain";
   /** Clase para el fondo que rodea una foto contenida. */
   surfaceClassName?: string;
+  /** Imagen alternativa para un contexto puntual, sin cambiar el catálogo general. */
+  imageFile?: string;
 }
 
 function publicFileExists(publicUrl: string): boolean {
@@ -30,9 +32,10 @@ export function hasDishPhoto(slug: DishSlug): boolean {
  * La foto es CUADRADA y se recorta en círculo (`object-cover`); no necesita fondo transparente.
  * Si el PNG todavía no existe (ver docs/ASSETS.md), dibuja una reserva con la misma forma.
  */
-export function DishPhoto({ slug, sizes, priority = false, className = "", shape = "circle", fit = "cover", surfaceClassName = "" }: DishPhotoProps) {
+export function DishPhoto({ slug, sizes, priority = false, className = "", shape = "circle", fit = "cover", surfaceClassName = "", imageFile }: DishPhotoProps) {
   const dish = DISHES[slug];
-  const hasPhoto = publicFileExists(dish.file);
+  const file = imageFile ?? dish.file;
+  const hasPhoto = publicFileExists(file);
   const tile = shape === "tile";
 
   return (
@@ -44,7 +47,7 @@ export function DishPhoto({ slug, sizes, priority = false, className = "", shape
       <div className={`h-full w-full ${tile ? "" : "rounded-full bg-blanco p-[2.8%]"}`}>
         <div className={`relative h-full w-full overflow-hidden bg-arena ${tile ? "rounded-lg" : "rounded-full"} ${surfaceClassName}`}>
           {hasPhoto ? (
-            <Image src={dish.file} alt={dish.label} fill sizes={sizes} priority={priority} className={fit === "contain" ? "object-contain" : "object-cover"} />
+            <Image src={file} alt={dish.label} fill sizes={sizes} priority={priority} className={fit === "contain" ? "object-contain" : "object-cover"} />
           ) : (
             <div className="grid h-full w-full place-items-center">
               <p className="hidden text-center text-[0.62rem] font-bold uppercase leading-tight tracking-wider text-tinta-suave @[7rem]:block">
